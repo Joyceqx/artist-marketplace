@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, formatPrice } from "@/lib/mock";
+import { artFor, formatPrice } from "@/lib/format";
 import { LicensePanel } from "@/components/LicensePanel";
 
 type Params = { id: string };

@@ -1,6 +1,4 @@
-// Visual-only helpers that remain after schema alignment.
-// All artist/work fields (location, attestation_tier, price_from_cents, etc.)
-// now come from the database — not this file.
+// Display-formatters used across pages.
 
 export const ART_CYCLE = ["a2", "a3", "a4", "a5", "a6"] as const;
 

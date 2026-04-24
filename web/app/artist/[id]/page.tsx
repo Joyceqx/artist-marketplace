@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, formatPrice, formatReach } from "@/lib/mock";
+import { artFor, formatPrice, formatReach } from "@/lib/format";
 import { CommissionForm } from "@/components/CommissionForm";
 
 type Params = { id: string };

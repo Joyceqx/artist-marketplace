@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, formatPrice } from "@/lib/mock";
+import { artFor, formatPrice } from "@/lib/format";
 
 const FEATURED_TAPE: Array<{ label: string; style?: React.CSSProperties }> = [
   { label: "trending" },
