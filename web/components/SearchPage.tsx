@@ -2,8 +2,10 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { portraitFor } from "@/lib/format";
 import { SearchLanding } from "@/components/SearchLanding";
 
 type Mode = "artist" | "work";
@@ -314,7 +316,17 @@ function SearchResults({
                 className="artist-card"
               >
                 <div className="img-wrap">
-                  <div className={`art ${artFor(i)}`} />
+                  {portraitFor(a.display_name) ? (
+                    <Image
+                      src={portraitFor(a.display_name) as string}
+                      alt={a.display_name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      style={{ objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div className={`art ${artFor(i)}`} />
+                  )}
                   <span className="no">№ {String(i + 1).padStart(2, "0")}</span>
                 </div>
                 <h3>

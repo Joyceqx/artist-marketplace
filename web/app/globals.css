@@ -217,6 +217,9 @@ nav.site .issue {
   position: relative;
   overflow: hidden;
   aspect-ratio: 3 / 4;
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 .home-hero-img .art {
   width: 100%;

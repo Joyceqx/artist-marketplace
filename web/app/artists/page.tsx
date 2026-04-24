@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, formatPrice } from "@/lib/format";
+import { artFor, formatPrice, portraitFor } from "@/lib/format";
 
 const FEATURED_TAPE: Array<{ label: string; style?: React.CSSProperties }> = [
   { label: "trending" },
@@ -131,7 +132,17 @@ export default async function ArtistsPage() {
                   className="af-card"
                 >
                   <div className="af-art">
-                    <div className={`art ${artFor(i)}`} />
+                    {portraitFor(a.display_name) ? (
+                      <Image
+                        src={portraitFor(a.display_name) as string}
+                        alt={a.display_name}
+                        fill
+                        sizes="(max-width: 1400px) 33vw, 460px"
+                        style={{ objectFit: "cover" }}
+                      />
+                    ) : (
+                      <div className={`art ${artFor(i)}`} />
+                    )}
                     <span className="af-num">
                       № {String(i + 1).padStart(2, "0")}
                     </span>

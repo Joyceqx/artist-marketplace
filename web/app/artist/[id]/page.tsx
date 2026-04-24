@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, formatPrice, formatReach } from "@/lib/format";
+import { artFor, formatPrice, formatReach, portraitFor } from "@/lib/format";
 import { CommissionForm } from "@/components/CommissionForm";
 
 type Params = { id: string };
@@ -54,7 +55,18 @@ export default async function ArtistPage({
 
       <div className="artist-head">
         <div className="portrait">
-          <div className={`art ${artFor(0)}`} />
+          {portraitFor(artist.display_name) ? (
+            <Image
+              src={portraitFor(artist.display_name) as string}
+              alt={artist.display_name}
+              fill
+              sizes="(max-width: 1400px) 50vw, 700px"
+              style={{ objectFit: "cover" }}
+              priority
+            />
+          ) : (
+            <div className={`art ${artFor(0)}`} />
+          )}
           <span className="stamp-wrap">
             <span className="stamp">Member · {memberYear}</span>
           </span>

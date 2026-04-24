@@ -1,45 +1,66 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HomeHero } from "@/components/HomeHero";
+import { createClient } from "@/lib/supabase/server";
 
-const THIS_WEEK = [
+type FeaturedDef = {
+  display_name: string;
+  slug: string;
+  caption: string;
+  tape: string;
+  tapeStyle?: React.CSSProperties;
+};
+
+const FEATURED: FeaturedDef[] = [
   {
-    no: "№ 01",
-    name: "Hanako Ito",
-    caption: "Musician · Tokyo · Est. 2022",
-    quote: "Field recordings under synths, cassette under everything.",
-    art: "a2",
-    tapeClass: "tape",
-    tapeText: "new",
+    display_name: "Pilar Vega",
+    slug: "pilar",
+    caption: "Illustrator · Lisbon · Est. 2019",
+    tape: "new",
   },
   {
-    no: "№ 02",
-    name: "Dao Nguyen",
-    caption: "Illustrator · Ho Chi Minh City",
-    quote: "Pastel riso prints, kids' book covers, tea packaging.",
-    art: "a3",
-    tapeClass: "tape",
-    tapeText: "indie",
+    display_name: "Kenji Arai",
+    slug: "kenji",
+    caption: "Musician · Kyoto",
+    tape: "indie",
     tapeStyle: {
       background: "rgba(227,74,47,0.5)",
       transform: "rotate(2deg)",
-    } as const,
+    },
   },
   {
-    no: "№ 03",
-    name: "T. Kodama",
-    caption: "Videographer · Osaka",
-    quote: "8mm dusk loops. Slow, quiet, very patient.",
-    art: "a4",
-    tapeClass: "tape",
-    tapeText: "emerging",
+    display_name: "Ines Moreau",
+    slug: "ines",
+    caption: "Filmmaker · Marseille",
+    tape: "emerging",
     tapeStyle: {
       background: "rgba(45,77,138,0.35)",
       transform: "rotate(-0.5deg)",
-    } as const,
+    },
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("artists")
+    .select("id, display_name, bio, location")
+    .in(
+      "display_name",
+      FEATURED.map((f) => f.display_name),
+    );
+  const byName = new Map(
+    (data ?? []).map((a) => [a.display_name as string, a] as const),
+  );
+  const featured = FEATURED.map((f, i) => ({
+    ...f,
+    no: `№ ${String(i + 1).padStart(2, "0")}`,
+    id: byName.get(f.display_name)?.id as string | undefined,
+    bio: byName.get(f.display_name)?.bio as string | undefined,
+  })).filter((f) => f.id);
+
+  const hero = featured[0];
+
   return (
     <section className="home">
       <div className="home-issue-line">
@@ -49,11 +70,25 @@ export default function Home() {
       </div>
 
       <div className="home-hero">
-        <div className="home-hero-img">
-          <div className="art a2" />
+        <Link
+          href={hero ? `/artist/${hero.id}` : "/artists"}
+          className="home-hero-img"
+        >
+          {hero ? (
+            <Image
+              src={`/featured/${hero.slug}.webp`}
+              alt={hero.display_name}
+              fill
+              sizes="280px"
+              style={{ objectFit: "cover" }}
+              priority
+            />
+          ) : (
+            <div className="art a2" />
+          )}
           <span className="tape">this week&rsquo;s find ✦</span>
           <span className="no">№ 01</span>
-        </div>
+        </Link>
         <div className="home-hero-body">
           <h1>
             Find your<br />
@@ -90,18 +125,28 @@ export default function Home() {
           <div className="mono-caption">03 featured · updated fridays</div>
         </div>
         <div className="strip-grid">
-          {THIS_WEEK.map((f) => (
-            <Link key={f.no} href="/artists" className="feat">
+          {featured.map((f) => (
+            <Link
+              key={f.slug}
+              href={`/artist/${f.id}`}
+              className="feat"
+            >
               <div className="img-wrap">
-                <div className={`art ${f.art}`} />
+                <Image
+                  src={`/featured/${f.slug}.webp`}
+                  alt={f.display_name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                />
                 <span className="no">{f.no}</span>
-                <span className={`tape-label ${f.tapeClass}`} style={f.tapeStyle}>
-                  {f.tapeText}
+                <span className="tape-label tape" style={f.tapeStyle}>
+                  {f.tape}
                 </span>
               </div>
-              <h3>{f.name}</h3>
+              <h3>{f.display_name}</h3>
               <div className="caption">{f.caption}</div>
-              <div className="quote">&ldquo;{f.quote}&rdquo;</div>
+              <div className="quote">&ldquo;{f.bio}&rdquo;</div>
             </Link>
           ))}
         </div>
