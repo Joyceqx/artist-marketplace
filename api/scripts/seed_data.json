@@ -1,0 +1,1061 @@
+[
+  {
+    "display_name": "Kenji Arai",
+    "bio": "An exploration of soundscapes, where the interplay of long-form drones and environmental recordings evoke the ephemeral moments of nature in urban Kyoto.",
+    "location": "Kyoto, JP",
+    "attestation_tier": "self_declared",
+    "reach_score": 8000,
+    "works": [
+      {
+        "title": "Whispers of Rain",
+        "description": "Layered tape loops capture the delicate sound of rainfall, woven with soft synth drones that evoke a meditative atmosphere.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Dawn Chorus",
+        "description": "Field recordings of chirping birds merge with subtle, slow-moving textures to create an immersive early morning ambiance.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Forgotten Echoes",
+        "description": "Vintage tape hiss collides with distant city sounds, forming a haunting backdrop that reflects on memory and nostalgia.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Drifting Leaves",
+        "description": "Natural samples of rustling leaves are blended with elongated tones, evoking a sense of weightlessness in a serene forest setting.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Urban Reverie",
+        "description": "A blend of city sounds and elongated synth pads creates a reflective soundscape that captures the essence of urban life.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Silent Streams",
+        "description": "Field recordings of flowing water are paired with lush drones, immersing the listener in a tranquil riverside experience.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Ethereal Shadows",
+        "description": "Manipulated sounds from a vintage tape machine intertwine with ghostly reverberations, creating a rich, atmospheric texture.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Misty Morning",
+        "description": "Droning tones merge with the soft hum of distant rain, transporting the listener to a hazy Kyoto morning.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Fleeting Moments",
+        "description": "An intricate interplay of field recordings and ambient synths captures the transient beauty of fleeting sensations.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Nightfall Silence",
+        "description": "The stillness of night is rendered in layers of deep, resonating drones, punctuated by occasional ambient sounds from nature.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Cascading Echoes",
+        "description": "The sound of cascading water is artistically manipulated into rhythmic pulses, creating a dynamic and evolving soundscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Veiled Horizons",
+        "description": "Long, sustained tones blend with atmospheric samples, evoking a sense of mystery and the vast unknown.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Olu Adeyemi",
+    "bio": "An innovative voice in Afrobeat, this artist weaves polyrhythmic drums and warm analog synths with Yoruba vocal samples, creating a vibrant tapestry of sound that resonates deeply with the pulse of Lagos.",
+    "location": "Lagos, NG",
+    "attestation_tier": "self_declared",
+    "reach_score": 4500,
+    "works": [
+      {
+        "title": "Echoes of Lagos",
+        "description": "Layered percussion interplays with sultry synth pads, evoking the bustling energy of the urban landscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Yoruba Dreams",
+        "description": "Traditional vocal samples are intricately woven with lush bass lines, transporting listeners to a serene, sunlit afternoon.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Rhythm of the Diaspora",
+        "description": "Complex drum patterns sync with organic textures, reflecting the diverse cultural influences that shape the soundscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Analog Warmth",
+        "description": "Rich, saturated synths blend with live instrumentation, creating an inviting atmosphere reminiscent of intimate gatherings.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Polyrhythmic Waves",
+        "description": "A dynamic interplay of shifting rhythms and harmonies captures the essence of celebration and community.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Nightfall Serenade",
+        "description": "Smooth grooves and haunting melodies evoke the mysterious allure of Lagos after dusk.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Sunrise Pulse",
+        "description": "Bright, optimistic chords and syncopated beats mimic the awakening of the city, infusing vitality into each note.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Talia Forsyth",
+    "bio": "An open-tuning guitarist from Dunedin, this artist weaves haunting soundscapes with reverb-drenched textures, inviting listeners into expansive, meditative realms.",
+    "location": "Dunedin, NZ",
+    "attestation_tier": "self_declared",
+    "reach_score": 2400,
+    "works": [
+      {
+        "title": "Whispers in the Mist",
+        "description": "An ethereal blend of fingerstyle guitar and ambient loops, echoing the quietude of early dawn in a damp forest.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Fragmented Echoes",
+        "description": "Layered guitar harmonics intertwine with subtle field recordings, creating a reflective atmosphere reminiscent of distant waves.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Suspended In Time",
+        "description": "Slow, deliberate strumming is enhanced by rich reverb, conjuring a sense of timelessness in a vast, empty space.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Celestial Drift",
+        "description": "Delicate melodies float over cascading layers of sound, evoking the serenity of starlit skies in the deep of night.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Silent Reverie",
+        "description": "An exploration of space through minimalistic picking patterns and ambient drones, mirroring the stillness of an untouched landscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Fleeting Moments",
+        "description": "A tapestry of soft guitar textures interlaces with gentle percussion, portraying the transient beauty of a sunset.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Marcus Winter",
+    "bio": "A purveyor of glacial soundscapes, this Reykjavík-based artist explores the vastness of time and texture through immersive modular synth compositions.",
+    "location": "Reykjavík, IS",
+    "attestation_tier": "verified",
+    "reach_score": 9200,
+    "works": [
+      {
+        "title": "Frosted Echoes",
+        "description": "Layered oscillations create a delicate, shimmering effect, evoking the stillness of a snow-covered landscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Fractured Light",
+        "description": "Utilizing a combination of sequencers and atmospheric drones, this piece unfurls like a slow sunrise over a frozen horizon.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Glacial Drift",
+        "description": "Sparse synth patterns mimic the sound of shifting ice, crafting a sound environment of gradual transformation.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Infinite Horizon",
+        "description": "Long, sustained tones blend seamlessly, producing a sense of endless space and introspection.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Luminous Void",
+        "description": "Dark, resonant textures are punctuated by high-frequency whispers, reminiscent of distant celestial bodies.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Winter's Breath",
+        "description": "Subtle shifts in timbre evoke the sensation of chilly winds across a barren landscape, inviting deep contemplation.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Slow Descent",
+        "description": "A gradual layering of synths elicits a feeling of sinking into deep waters, enveloping the listener in tranquility.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Veil of Mist",
+        "description": "Soft, enveloping tones create an ethereal atmosphere, as if moving through a dense fog on a quiet morning.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Subterranean Pulse",
+        "description": "Deep, resonant bass lines interact with fluttering high notes, suggesting the hidden vibrancy beneath the ice.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Time's Embrace",
+        "description": "An exploration of slow tempo and expansive sound, this piece unfolds like the slow passage of time itself.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Aya Tolentino",
+    "bio": "A bossa-tinged jazz pianist from Manila, her humid-city recordings capture the intimacy of warm mic bleed and intricate melodies.",
+    "location": "Manila, PH",
+    "attestation_tier": "self_declared",
+    "reach_score": 900,
+    "works": [
+      {
+        "title": "Sunset Serenade",
+        "description": "Glimmering piano chords intertwine with soft brush strokes on drums, evoking the languid warmth of a tropical evening.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Rainy Day Reverie",
+        "description": "Layered synth pads blend with live piano improvisation, creating a reflective mood reminiscent of rain tapping against windowpanes.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Midnight Stroll",
+        "description": "A playful bass line dances beneath delicate piano flourishes, conjuring images of quiet streets illuminated by flickering streetlights.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Elias Dubois",
+    "bio": "A blend of vibrant harpsichord textures and intricate electronic beats unfolds in this artist's work, drawing the listener into a labyrinth of sound.",
+    "location": "Montréal, CA",
+    "attestation_tier": "self_declared",
+    "reach_score": 500,
+    "works": [
+      {
+        "title": "Chopped Reverie",
+        "description": "A tapestry of baroque samples intertwined with glitchy percussion creates an ethereal atmosphere, evoking a dreamlike state amid the clamor of an urban landscape.",
+        "medium": "music",
+        "price_from_cents": 4000
+      },
+      {
+        "title": "Fractured Resonance",
+        "description": "Layered harpsichord melodies are meticulously sliced and reassembled with pulsing synths, crafting a dynamic dialogue that oscillates between the ornate and the contemporary.",
+        "medium": "music",
+        "price_from_cents": 4000
+      }
+    ]
+  },
+  {
+    "display_name": "Pilar Vega",
+    "bio": "Based in Lisbon, this artist creates intricate illustrations that weave together folk narratives with a focus on botanical elements and Iberian motifs, utilizing ink and gouache in rust-ochre tones.",
+    "location": "Lisbon, PT",
+    "attestation_tier": "verified",
+    "reach_score": 11000,
+    "works": [
+      {
+        "title": "Whispering Ferns",
+        "description": "A delicate portrayal of ferns intertwined with mythical creatures, rendered in fine ink lines and layered gouache, evoking a sense of enchanted woodland secrecy.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Sunlit Olive Grove",
+        "description": "This piece captures the tranquil beauty of an olive grove at dusk, using warm rust-ochre hues and detailed botanical studies to convey a serene, pastoral atmosphere.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Moonlit Dancers",
+        "description": "Ink and gouache meld to depict silhouetted figures in traditional Iberian dress, set against a rich night sky, evoking the rhythm of an ancient folk celebration.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Fable of the Cacti",
+        "description": "An intricate composition featuring a variety of cacti species, illustrated with precise botanical detail and a warm palette that evokes the arid yet vibrant Iberian landscape.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "The Enchanted Garden",
+        "description": "A lush garden scene brought to life with vivid gouache blossoms and fine ink lines, creating a dreamlike quality that invites viewers to step into a story.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Rustic Hearth",
+        "description": "This work depicts a cozy kitchen corner, filled with herbs and spices, captured in earthy tones and textured brushwork that recalls the warmth of home life.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Folk Tales Unfold",
+        "description": "A series of vignettes illustrating traditional stories, rendered in striking ink and gouache, each panel enriched with Iberian elements and evocative narratives.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Botanical Reverie",
+        "description": "An evocative arrangement of wildflowers detailed with intricate ink line work, set against a subdued background that enhances the natural vibrancy of the subject.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Serenade of Shadows",
+        "description": "This piece explores the interplay of light and shadow through ink silhouettes of trees, while soft washes of gouache create a dream-like atmosphere.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Harvest Moon",
+        "description": "An illustration depicting a bountiful harvest under a full moon, using warm ochre tones and fluid brushstrokes to convey a celebratory mood.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Guardians of the Forest",
+        "description": "A captivating depiction of mythical forest creatures surrounded by intertwining plants, skillfully rendered in layered ink and vivid gouache.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Iberian Echoes",
+        "description": "This artwork features intricate patterns inspired by traditional Iberian textiles, combined with organic forms, employing rich colors to evoke cultural resonance.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Frost on Ferns",
+        "description": "A serene winter scene showcasing ferns dusted with frost, illustrated with meticulous detail in muted, earthy tones to reflect the quiet beauty of nature.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Mireia Pons",
+    "bio": "Based in Barcelona, this illustration artist explores the intersection of skate culture and punk aesthetics through vibrant, two-color risograph prints.",
+    "location": "Barcelona, ES",
+    "attestation_tier": "self_declared",
+    "reach_score": 5200,
+    "works": [
+      {
+        "title": "Urban Decay",
+        "description": "A gritty depiction of abandoned skate spots, rendered in bold green and black hues, capturing the essence of youthful rebellion.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Flying High",
+        "description": "Dynamic scenes of skaters in mid-air, printed with a striking red and blue palette, evoking a sense of freedom and adrenaline.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Punk's Not Dead",
+        "description": "A textured zine cover featuring hand-drawn characters and collage elements, celebrating the spirit of underground music scenes.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Boarded Dreams",
+        "description": "A minimalist two-color print featuring skateboard decks amidst graffiti, encapsulating the raw energy of urban life.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Concrete Jungle",
+        "description": "A vibrant illustration of a bustling skate park, using a limited color scheme to highlight the chaotic beauty of city spaces.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Riot Grrls",
+        "description": "An empowering homage to female skaters, illustrated in powerful pink and black tones, challenging stereotypes within the subculture.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Night Rides",
+        "description": "A moody depiction of skaters at twilight, utilizing deep blues and yellows to convey the thrill of nighttime escapades.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Anja Larsen",
+    "bio": "Rooted in minimalism, the illustrations explore the interplay of negative space and fine lines, evoking quiet narratives through restraint and subtlety.",
+    "location": "Copenhagen, DK",
+    "attestation_tier": "self_declared",
+    "reach_score": 3100,
+    "works": [
+      {
+        "title": "Silent Conversations",
+        "description": "Delicate hairline pen strokes define abstract figures engaged in unspoken dialogues, set against a stark newsprint backdrop.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Urban Echoes",
+        "description": "A sparse skyline rendered with meticulous detail captures the essence of Copenhagen's architecture, utilizing negative space to evoke solitude.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Fleeting Moments",
+        "description": "Captured in ink on textured paper, fleeting gestures of everyday life emerge, inviting contemplation with their understated elegance.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Whispers of Nature",
+        "description": "Intricate illustrations of flora, using fine pen lines and minimal color, suggest a quiet harmony between urban living and the natural world.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Stillness in Motion",
+        "description": "Dynamic yet restrained compositions depict figures in fluid motion, employing a blend of negative space and precise linework to convey energy.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Suri Patel",
+    "bio": "In the vibrant pulse of Mumbai, a unique blend of botanical forms emerges through gouache, capturing the fleeting essence of monsoon flora in a field-journal style.",
+    "location": "Mumbai, IN",
+    "attestation_tier": "self_declared",
+    "reach_score": 1200,
+    "works": [
+      {
+        "title": "Monsoon Echoes",
+        "description": "Layered gouache captures the lush greens and deep blues of rain-soaked leaves, evoking the tranquility of nature's renewal.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Petal Diaries",
+        "description": "Delicate line work intertwines with rich washes of color to document the ephemeral beauty of blossoms, recorded with a painter's sensitivity to light and texture.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Field Notes",
+        "description": "A series of observational studies, rendered in a soft palette, reflect the quiet moments of flora during the monsoon, merging scientific detail with artistic expression.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Henrik Volk",
+    "bio": "Inhabiting the shadows of Oslo, the work captures the grit and mystery of urban life through intricate crosshatching and stark contrasts.",
+    "location": "Oslo, NO",
+    "attestation_tier": "self_declared",
+    "reach_score": 2800,
+    "works": [
+      {
+        "title": "Nocturnal Echoes",
+        "description": "A dense ink rendering of a rain-soaked street corner, where flickering neon lights fight against the encroaching darkness.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Siren's Call",
+        "description": "An illustration exploring the haunting allure of a lone figure, framed by swirling smoke and the stark geometry of an empty alley.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Urban Labyrinth",
+        "description": "A sprawling cityscape intricately woven with crosshatch lines, depicting a maze of rooftops and distant figures shrouded in mist.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Waltz of Shadows",
+        "description": "A dramatic scene of two figures dancing under a streetlamp, their silhouettes merging with the swirling night, captured in rich black ink.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Fleeting Moments",
+        "description": "A fleeting glance of pedestrians captured in a moment of hurried movement, portrayed in dense layers of ink that create an atmospheric tension.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Ghosts of the City",
+        "description": "A haunting visual narrative of abandoned buildings, where the interplay of light and shadow evokes forgotten stories of urban existence.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Zuri Okafor",
+    "bio": "A digital painter from Accra, this artist conjures afrofuturist portraits that intertwine the vibrancy of wax-print motifs with the sleekness of chrome textures.",
+    "location": "Accra, GH",
+    "attestation_tier": "self_declared",
+    "reach_score": 4100,
+    "works": [
+      {
+        "title": "Ethereal Reflections",
+        "description": "A luminous portrait featuring layered chrome effects that capture the subject's gaze, set against a backdrop of swirling wax-print patterns.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Heritage Reimagined",
+        "description": "This work employs intricate line work and bold colors to depict a figure adorned in traditional attire, seamlessly blending cultural symbols with futuristic elements.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Cosmic Dialogue",
+        "description": "Rendered with digital brushes, this piece explores themes of connection through two figures entwined in a hypnotic embrace, surrounded by a galaxy of vibrant wax-print designs.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Awakening Spirits",
+        "description": "A striking composition that uses high-contrast colors and dynamic shadows to portray a figure emerging from a field of abstracted wax motifs, evoking a sense of transcendence.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Urban Dreams",
+        "description": "This illustration captures a bustling cityscape with figures in motion, infused with chrome accents that reflect the energy of an afrofuturist vision.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Juno Fernández",
+    "bio": "This illustration artist employs a satirical four-panel format to dissect political narratives, merging humor with incisive commentary. Each piece resonates with the tactile quality of newsprint, creating a vivid tableau of contemporary life in Lima.",
+    "location": "Lima, PE",
+    "attestation_tier": "self_declared",
+    "reach_score": 700,
+    "works": [
+      {
+        "title": "Civic Discontent",
+        "description": "Rendered in stark black ink against a textured background, this piece captures the absurdity of bureaucratic delays, combining exaggerated expressions with biting dialogue.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      },
+      {
+        "title": "Election Circus",
+        "description": "This vibrant strip juxtaposes whimsical characters with chaotic campaign scenes, employing a limited color palette to enhance the ironic undertones of political spectacle.",
+        "medium": "illustration",
+        "price_from_cents": 8000
+      }
+    ]
+  },
+  {
+    "display_name": "Ines Moreau",
+    "bio": "A documentary filmmaker based in Marseille, this artist captures the intimate rhythms of daily labor through handheld 16mm portraits, revealing the quiet dignity of tradespeople.",
+    "location": "Marseille, FR",
+    "attestation_tier": "verified",
+    "reach_score": 7800,
+    "works": [
+      {
+        "title": "Forging Foundations",
+        "description": "Shot in a dimly lit blacksmith shop, this piece uses grainy 16mm film to convey the heat and intensity of metal being shaped by experienced hands.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Market Exchanges",
+        "description": "A vibrant exploration of a bustling local market, this work combines close-up shots of fresh produce with ambient sounds to create a sensory tapestry of everyday life.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Ceramic Echoes",
+        "description": "Documenting the tactile process of pottery making, this film features slow-motion sequences that highlight the artist's delicate touch and the interplay of clay and water.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Street Scaffold",
+        "description": "Captured on a busy construction site, this piece juxtaposes the rhythmic sounds of tools with the visual chaos of urban architecture in progress.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Threaded Memories",
+        "description": "In an intimate tailor's workshop, this film captures the intricate process of garment creation, focusing on the interplay of fabric textures and personal stories.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Fisherman's Dawn",
+        "description": "Filmed at sunrise on the Mediterranean coast, this piece immerses viewers in the quietude of fishing life, accentuated by the soft lapping of waves and distant gull cries.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Baker's Ritual",
+        "description": "This work explores the sensory details of a traditional bakery, showcasing the craft of bread making through close-ups of kneading hands and the warm glow of the oven.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Woodworker's Song",
+        "description": "In a sunlit workshop, the artist captures the focused concentration of a woodworker, using the rich textures of timber to evoke a sense of craftsmanship and legacy.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Welding Sparks",
+        "description": "A dynamic portrayal of a metalworker in action, this film highlights the contrast between bright welding sparks and the surrounding shadows, creating a visually striking narrative.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Guitar Strings",
+        "description": "Set in a cozy music shop, this piece offers a close look at the process of string replacement, blending auditory detail with tactile imagery of worn instruments.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Glassblowing Whispers",
+        "description": "In a hot glass studio, the fluid motion of glass being shaped is highlighted, with slow pacing that invites contemplation of transformation and artistry.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Raza Kahn",
+    "bio": "A motion-graphic title designer from Karachi, this artist creates tarot-geometric visuals that enhance the narrative depth of film credits, merging symbolism and abstraction.",
+    "location": "Karachi, PK",
+    "attestation_tier": "self_declared",
+    "reach_score": 3600,
+    "works": [
+      {
+        "title": "Celestial Arcana",
+        "description": "A vibrant composition featuring animated tarot symbols, meticulously crafted using After Effects and Cinema 4D to evoke a sense of mystique.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Geometric Reverie",
+        "description": "A series of dynamic, rotating shapes constructed from vector graphics that explore themes of fate and choice, set against a dark, pulsating backdrop.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Mystic Flow",
+        "description": "Intricate animations that blend organic textures and geometric patterns, utilizing hand-drawn elements and digital manipulation to create a meditative ambiance.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Ethereal Vortex",
+        "description": "A swirling animation sequence that combines 3D modeling and motion tracking, immersing viewers in a surreal journey through an abstract universe.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Arcane Harmony",
+        "description": "A visual exploration of balance, featuring synchronized typography and geometric forms, meticulously timed to an atmospheric soundscape.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Kaleidoscopic Visions",
+        "description": "An experimental piece using layering techniques and vivid color palettes, designed to reflect the fluid nature of perception and reality.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Daria Petrov",
+    "bio": "Exploring the shifting light and sound of the northern coast, this video art captures the ephemeral beauty of dusk fading into darkness.",
+    "location": "Tallinn, EE",
+    "attestation_tier": "self_declared",
+    "reach_score": 1400,
+    "works": [
+      {
+        "title": "Whispers of Twilight",
+        "description": "A single-channel video piece featuring time-lapse photography of the coastline, accompanied by the soft rustle of wind and distant crashing waves.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Ebb and Flow",
+        "description": "An immersive loop of the ocean’s surface, recorded in high definition, where the fluidity of water mirrors the stillness of an encroaching night.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Fleeting Shadows",
+        "description": "This work juxtaposes slow-motion footage of drifting clouds against a stark, muted soundscape, evoking a sense of introspection at the day's end.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Theo Nakamura",
+    "bio": "A visceral exploration of urban landscapes through unbroken, grainy frames, capturing the raw essence of skate culture in motion.",
+    "location": "Osaka, JP",
+    "attestation_tier": "self_declared",
+    "reach_score": 950,
+    "works": [
+      {
+        "title": "Concrete Reverie",
+        "description": "Shot on super-8 film, this piece immerses viewers in the vibrant chaos of Osaka's streets, featuring fluid long takes that evoke a sense of freedom and rebellion.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Nightfall Grind",
+        "description": "Filmed during twilight hours, this work employs a stark contrast between shadows and flickering lights, showcasing the rhythmic dance of skaters navigating an abandoned skate park.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Mira Al-Sayed",
+    "bio": "A videographer immersed in the interplay of geological forms and time, capturing the stark beauty of stone canyons through aerial perspectives.",
+    "location": "Amman, JO",
+    "attestation_tier": "self_declared",
+    "reach_score": 2200,
+    "works": [
+      {
+        "title": "Erosion's Embrace",
+        "description": "A slow-motion exploration of wind-carved cliffs, revealing textures and shadows that fluctuate under changing light.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Timeless Horizons",
+        "description": "A time-lapse sequence documenting the shifting sands of desert landscapes, underscoring the relentless passage of time.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Canyon Whisper",
+        "description": "An aerial journey through narrow stone corridors, capturing the haunting echoes of nature in a cinematic tableau.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Earth's Palette",
+        "description": "A vivid study of mineral formations, utilizing color grading to emphasize the geological layers and their historical narrative.",
+        "medium": "video",
+        "price_from_cents": 14000
+      },
+      {
+        "title": "Chasm Dance",
+        "description": "A dynamic flight over deep gorges, juxtaposing rhythmic movements of the drone with the stillness of ancient rock formations.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Oscar Dias",
+    "bio": "A visual storyteller from Luanda, his work captures the essence of coastal life through intimate conversations with local elders, accompanied by the sounds of the sea.",
+    "location": "Luanda, AO",
+    "attestation_tier": "self_declared",
+    "reach_score": 400,
+    "works": [
+      {
+        "title": "Tides of Memory",
+        "description": "This piece features long-take interviews recorded on a sunlit beach, where the rich texture of salt-air audio mingles with the gentle lapping of waves.",
+        "medium": "video",
+        "price_from_cents": 14000
+      }
+    ]
+  },
+  {
+    "display_name": "Asher Coen",
+    "bio": "A Tel Aviv-based stop-motion animator crafts surreal bestiaries with intricately handcrafted wool-felt creatures, each meticulously supported by bespoke armatures.",
+    "location": "Tel Aviv, IL",
+    "attestation_tier": "self_declared",
+    "reach_score": 6100,
+    "works": [
+      {
+        "title": "Whispers of the Night",
+        "description": "A nocturnal vignette featuring shadowy figures woven from fine wool, animated within a dimly lit forest setting, evoking a sense of mystery.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Fabled Encounters",
+        "description": "This piece depicts an unlikely meeting between fantastical beasts, brought to life through vibrant felt and delicate wire armatures, set against a surreal, dreamlike backdrop.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Echoes of Solitude",
+        "description": "A solitary creature, crafted from soft, textured wool, navigates a desolate landscape, exploring themes of isolation and introspection with slow, deliberate movements.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "The Dance of Shadows",
+        "description": "Capturing a playful ballet of wool-felt figures swirling through a misty arena, this work blends dynamic motion with an ethereal color palette.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Harvest of Dreams",
+        "description": "A colorful assembly of mythical entities gathered in a whimsical garden, each character intricately detailed and animated to convey a sense of wonder.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Reverie in Motion",
+        "description": "This enchanting tableau features a variety of creatures engaged in an otherworldly ritual, utilizing handmade armatures to achieve fluid, enchanting movements.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Fragmented Memories",
+        "description": "A haunting exploration of nostalgia, presented through disjointed wool-felt forms interacting in a stark, minimalist environment that reflects fragmented thoughts.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Chimeric Conversations",
+        "description": "An engaging dialogue between hybrid creatures, constructed from carefully layered felt, animated to reflect their quirky personalities within a richly textured setting.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Frosted Whimsy",
+        "description": "A winter scene brought to life with soft, icy-toned wool characters playfully interacting amidst a backdrop of glimmering snow, evoking a sense of joy and festivity.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Elysian Echoes",
+        "description": "This dreamlike narrative showcases ethereal beings crafted from luminous felt, set in a serene, otherworldly landscape that evokes tranquility and reflection.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  },
+  {
+    "display_name": "Youssef Rahim",
+    "bio": "A painterly exploration of desert mythology unfolds through character-driven narratives, steeped in dense atmospherics and the mystique of Cairo's arid landscapes.",
+    "location": "Cairo, EG",
+    "attestation_tier": "self_declared",
+    "reach_score": 4800,
+    "works": [
+      {
+        "title": "Veil of Sand",
+        "description": "Rendered in oil on canvas, this piece captures a lone figure shrouded in swirling grains, evoking a sense of isolation amid a vast, sun-bleached expanse.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Whispers of Ancients",
+        "description": "Utilizing mixed media, this artwork combines ink and digital techniques to portray ethereal beings emerging from craggy rock formations, set against a twilight sky.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Guardian of the Oasis",
+        "description": "A striking watercolor composition features a colossal figure standing sentinel over a shimmering oasis, the play of light creating a serene yet tense atmosphere.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Mirage Dancers",
+        "description": "This digital painting employs vibrant colors and dynamic brushwork to depict a group of spectral dancers, their forms fluid against a backdrop of hazy dunes.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Fires of Creation",
+        "description": "Incorporating charcoal and pastel, this piece illustrates a fiery deity amidst swirling clouds, the juxtaposition of warmth and the cool tones of the desert night creating a dramatic tension.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Echoes in the Wind",
+        "description": "A detailed ink drawing captures ghostly silhouettes drifting through a tempest, each form hinting at stories lost to time, set in a tumultuous, windswept environment.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "The Last Caravan",
+        "description": "Crafted in acrylics, this scene depicts a weary caravan traversing a blood-orange sunset, the textures of the fabric and sand rendered with meticulous attention.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Celestial Pathways",
+        "description": "This ethereal digital artwork features celestial bodies entwined with desert flora, blending mythological elements with abstract patterns, inviting contemplation of the cosmos.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  },
+  {
+    "display_name": "Luna Prieto",
+    "bio": "Inhabiting a vibrant pixelated world, this chibi sprite artist captures whimsical characters with a retro-console aesthetic, reflecting the charm of classic gaming nostalgia.",
+    "location": "Buenos Aires, AR",
+    "attestation_tier": "self_declared",
+    "reach_score": 3200,
+    "works": [
+      {
+        "title": "Pixel Garden Guardians",
+        "description": "A set of animated sprites depicting playful creatures nestled among pixelated flowers, evoking a sense of serene fantasy.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Retro Space Adventurers",
+        "description": "Character sheets showcasing intrepid astronauts with oversized helmets, rendered in a limited color palette to replicate vintage gaming consoles.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Chibi Halloween Spirits",
+        "description": "A collection of endearing ghostly figures designed for a festive theme, utilizing bold outlines and bright colors to enhance their playful demeanor.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Fantasy Forest Dwellers",
+        "description": "Vivid characters inspired by woodland folklore, each sprite adorned with intricate details and a subtle gradient for depth.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Underwater Friends",
+        "description": "Charming aquatic sprites featuring whimsical fish and sea creatures, crafted with shimmering effects that mimic the play of light underwater.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Celestial Dreamers",
+        "description": "A series of starry-eyed characters floating through a pixelated night sky, combining soft pastels with dark backgrounds to create a dreamy atmosphere.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  },
+  {
+    "display_name": "Wren Hollis",
+    "bio": "Rooted in the shadows of Celtic folklore, this Dublin-based illustrator conjures haunting figures of bog-horror and folkloric beasts through intricate ink strokes and dark narratives.",
+    "location": "Dublin, IE",
+    "attestation_tier": "self_declared",
+    "reach_score": 1100,
+    "works": [
+      {
+        "title": "Banshee's Lament",
+        "description": "An inky portrayal of a wailing spirit, rendered on textured parchment, blending swirling clouds with ethereal tendrils to evoke a chilling sense of doom.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Goblin Market",
+        "description": "A detailed scene of a moonlit market filled with grotesque creatures, meticulously inked to highlight the contrast between their vibrant colors and the eerie nightscape.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Fomorian Shadows",
+        "description": "This piece captures a looming, monstrous figure emerging from a misty bog, utilizing deep blacks and stark whites to create a dramatic, foreboding atmosphere.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  },
+  {
+    "display_name": "Ben Tam",
+    "bio": "This artist explores mythological narratives through painted plates, creating a vivid tapestry of cross-cultural bestiary that invites contemplation of the fantastical and the familiar.",
+    "location": "Singapore, SG",
+    "attestation_tier": "self_declared",
+    "reach_score": 800,
+    "works": [
+      {
+        "title": "Celestial Menagerie",
+        "description": "A vibrant assemblage of hand-painted porcelain plates, featuring a harmonious blend of mythical creatures rendered in intricate detail, evoking a dreamlike atmosphere of cultural interconnection.",
+        "medium": "character",
+        "price_from_cents": 12000
+      },
+      {
+        "title": "Echoes of Legends",
+        "description": "Utilizing a rich palette of underglaze pigments, this composition showcases a dramatic interplay of shadow and light across textured stoneware, illustrating the haunting beauty of ancient lore.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  },
+  {
+    "display_name": "Kenneth Eko",
+    "bio": "Based in Port Harcourt, this artist crafts ritual figures that resonate with ancestral echoes, employing a woodcut aesthetic to breathe life into each mask's expressive form.",
+    "location": "Port Harcourt, NG",
+    "attestation_tier": "self_declared",
+    "reach_score": 300,
+    "works": [
+      {
+        "title": "Ritual Mask of Ancestry",
+        "description": "Carved from local hardwood, this piece features intricate geometric patterns, evoking a solemn atmosphere during ceremonial gatherings.",
+        "medium": "character",
+        "price_from_cents": 12000
+      }
+    ]
+  }
+]

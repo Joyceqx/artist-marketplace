@@ -1,7 +1,11 @@
-"""Seed a small set of artists + works with embeddings.
+"""Seed artists + works with embeddings.
 
-Upserts: re-running updates existing rows (so re-run after migration 0002
-to backfill new columns). Uses the service_role key to bypass RLS.
+Sources:
+  1. The hardcoded ARTISTS / WORKS below (the original 5 from the design).
+  2. scripts/seed_data.json (if present) — LLM-generated synthetic roster.
+
+Upserts: re-running updates existing rows. Uses the service_role key
+to bypass RLS.
 
 Run from api/ with the venv activated:
     python scripts/seed.py
@@ -9,6 +13,7 @@ Run from api/ with the venv activated:
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
@@ -97,6 +102,26 @@ def _embed(client: OpenAI, text: str) -> list[float]:
     return resp.data[0].embedding
 
 
+def _load_synthetic() -> list[dict]:
+    path = Path(__file__).resolve().parent / "seed_data.json"
+    if not path.exists():
+        return []
+    entries = json.loads(path.read_text())
+    # Normalise to the same shape as the hardcoded ARTISTS entries + expose works.
+    out: list[dict] = []
+    for e in entries:
+        artist = {
+            "display_name": e["display_name"],
+            "bio": e["bio"],
+            "location": e["location"],
+            "attestation_tier": e["attestation_tier"],
+            "reach_score": e["reach_score"],
+            "_works": e.get("works", []),
+        }
+        out.append(artist)
+    return out
+
+
 def main() -> None:
     openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     supabase = create_client(
@@ -107,8 +132,40 @@ def main() -> None:
     artists_added = artists_updated = 0
     works_added = works_updated = 0
 
+    # Build a unified seed list: hardcoded 5 + whatever's in seed_data.json.
+    seed_list: list[dict] = []
     for a in ARTISTS:
-        # Columns that are safe to update on every run.
+        seed_list.append(
+            {
+                "display_name": a["display_name"],
+                "bio": a["bio"],
+                "location": a["location"],
+                "attestation_tier": a["attestation_tier"],
+                "reach_score": a["reach_score"],
+                "works": [
+                    {
+                        "title": title,
+                        "description": description,
+                        "medium": medium,
+                        "price_from_cents": MEDIUM_PRICE_CENTS.get(medium, 4000),
+                    }
+                    for title, description, medium in WORKS[a["display_name"]]
+                ],
+            }
+        )
+    for s in _load_synthetic():
+        seed_list.append(
+            {
+                "display_name": s["display_name"],
+                "bio": s["bio"],
+                "location": s["location"],
+                "attestation_tier": s["attestation_tier"],
+                "reach_score": s["reach_score"],
+                "works": s["_works"],
+            }
+        )
+
+    for a in seed_list:
         fields = {
             "bio": a["bio"],
             "location": a["location"],
@@ -126,7 +183,6 @@ def main() -> None:
             artist_id = existing.data[0]["id"]
             supabase.table("artists").update(fields).eq("id", artist_id).execute()
             artists_updated += 1
-            print(f"artist ~  {a['display_name']}")
         else:
             inserted = (
                 supabase.table("artists")
@@ -137,8 +193,13 @@ def main() -> None:
             artists_added += 1
             print(f"artist +  {a['display_name']}")
 
-        for title, description, medium in WORKS[a["display_name"]]:
-            price_cents = MEDIUM_PRICE_CENTS.get(medium, 4000)
+        for w in a["works"]:
+            title = w["title"]
+            description = w["description"]
+            medium = w["medium"]
+            price_cents = w.get("price_from_cents") or MEDIUM_PRICE_CENTS.get(
+                medium, 4000
+            )
             existing_work = (
                 supabase.table("works")
                 .select("id")
@@ -148,7 +209,6 @@ def main() -> None:
                 .execute()
             )
             if existing_work.data:
-                # Update price_from_cents on existing rows; leave embedding alone.
                 supabase.table("works").update(
                     {
                         "description": description,
