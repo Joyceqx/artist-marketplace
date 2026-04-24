@@ -1,0 +1,103 @@
+# Claude Code CLI + Git 极简工作流
+
+## 目标
+
+让项目在多次 Claude session 切换时仍保持清晰、有进度、可回退。
+
+## 一次性初始化（在项目目录运行）
+
+```bash
+git init
+touch README.md
+touch STATUS.md
+```
+
+## 文件职责
+
+### README.md
+
+记录项目长期信息：
+
+* 项目做什么
+* 技术栈
+* 如何运行
+* 文件结构
+* 当前产品目标
+
+### STATUS.md
+
+记录短期执行信息：
+
+* 当前进度
+* 已完成内容
+* 已知问题
+* 下一步任务
+* 阻塞事项
+
+## 每次开始工作
+
+对 Claude 说：
+
+```text
+Read README.md and STATUS.md, then continue.
+```
+
+## 每次结束工作
+
+先保存版本：
+
+```bash
+git add .
+git commit -m "today progress"
+```
+
+再更新 STATUS.md：
+
+```md
+Next:
+- 做 landing page CTA button
+- 修复 mobile navbar
+- 测试 signup flow
+```
+
+## 推荐 commit message
+
+```text
+finished homepage hero
+added CTA button
+fixed login bug
+improved mobile UI
+updated docs
+```
+
+## 如果 Claude 改坏了
+
+查看状态：
+
+```bash
+git status
+```
+
+放弃未提交修改：
+
+```bash
+git restore .
+```
+
+## 核心原则
+
+* README 给 AI 看
+* STATUS 给未来的自己看
+* Git 给错误兜底
+
+## 最小日常循环
+
+1. 打开项目
+2. Claude 读取 README + STATUS
+3. 开发任务
+4. git commit 保存进度
+5. 更新 STATUS 写下一步
+
+## 一句话总结
+
+让文件记忆项目，而不是依赖聊天记忆。

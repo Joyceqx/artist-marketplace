@@ -15,8 +15,13 @@ create table if not exists public.artists (
 );
 
 -- WORKS: the pieces an artist lists
-create type medium_kind as enum ('music', 'illustration', 'video', 'character');
-create type listing_terms as enum ('buy_outright', 'license', 'commission');
+do $$ begin
+  create type medium_kind as enum ('music', 'illustration', 'video', 'character');
+exception when duplicate_object then null; end $$;
+
+do $$ begin
+  create type listing_terms as enum ('buy_outright', 'license', 'commission');
+exception when duplicate_object then null; end $$;
 
 create table if not exists public.works (
   id uuid primary key default gen_random_uuid(),
@@ -40,10 +45,11 @@ create table if not exists public.listings (
   created_at timestamptz default now()
 );
 
--- Vector index for fast similarity search
+-- Vector index for fast similarity search.
+-- HNSW over IVFFlat: better recall at any scale, no `lists` tuning, no empty-probe
+-- failures when the table has fewer rows than the list count.
 create index if not exists works_embedding_idx
-  on public.works using ivfflat (embedding vector_cosine_ops)
-  with (lists = 100);
+  on public.works using hnsw (embedding vector_cosine_ops);
 
 create index if not exists works_artist_id_idx on public.works(artist_id);
 create index if not exists listings_work_id_idx on public.listings(work_id);
@@ -81,20 +87,30 @@ alter table public.works enable row level security;
 alter table public.listings enable row level security;
 
 -- Everyone can read (it's a marketplace)
+drop policy if exists "artists_read_all" on public.artists;
 create policy "artists_read_all" on public.artists for select using (true);
+
+drop policy if exists "works_read_all" on public.works;
 create policy "works_read_all" on public.works for select using (true);
+
+drop policy if exists "listings_read_all" on public.listings;
 create policy "listings_read_all" on public.listings for select using (true);
 
 -- Artists can only write their own rows
+drop policy if exists "artists_insert_own" on public.artists;
 create policy "artists_insert_own" on public.artists for insert
   with check (user_id = auth.uid());
+
+drop policy if exists "artists_update_own" on public.artists;
 create policy "artists_update_own" on public.artists for update
   using (user_id = auth.uid());
 
+drop policy if exists "works_write_own" on public.works;
 create policy "works_write_own" on public.works for all
   using (artist_id in (select id from public.artists where user_id = auth.uid()))
   with check (artist_id in (select id from public.artists where user_id = auth.uid()));
 
+drop policy if exists "listings_write_own" on public.listings;
 create policy "listings_write_own" on public.listings for all
   using (work_id in (
     select w.id from public.works w
