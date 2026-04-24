@@ -8,14 +8,14 @@ Last updated: **2026-04-24**
 
 ## Where we are
 
-**Phase 1 + design port: complete.** Full stack wired end-to-end, and the minimal search UI is replaced with the IndiStream "Paper gallery" design (Home + Search only; other screens stubbed).
+**Phase 1.5 + all 5 design screens: complete.** Search works for both artists and works modes, with diversity re-rank on works. Home, search-landing, search-results, work detail, artist profile, and artists directory are all real — driven by live Supabase data with `lib/mock.ts` filling fields the schema doesn't have yet.
 
 | Area | State |
 |---|---|
-| `api/` FastAPI backend | `POST /search` live: embeds query (`text-embedding-3-small`) → calls `search_works` RPC → returns top-K. `_embed` and `_rank` are clean extension seams for future ranking changes. |
+| `api/` FastAPI backend | Two live endpoints: `POST /search` (works mode with diversity re-rank via round-robin by `artist_id`) and `POST /search/artists` (artist mode, aggregates top-3 work scores per artist, joins `artists` table). `_embed` / `_rank` / `_rank_artists` are clean seams for future ranking changes. |
 | `api/scripts/seed.py` | Idempotent seeder. 5 artists, 9 works across all 4 mediums. |
-| `web/` Next.js frontend | IndiStream design ported to `/` (editorial home) and `/search` (two-column brief + results). Nav, typography, paper grain, riso-art placeholders, rubber-stamp / tape / verified-badge system all in place. Raw CSS in `app/globals.css` (Tailwind no longer imported). Builds clean, 0 npm vulns. Stubs at `/artists` and `/work`. |
-| `web/lib/supabase/{client,server}.ts` | `@supabase/ssr` helpers wired (server uses Next 16 `await cookies()`). Artists list fetched client-side on Search page. |
+| `web/` Next.js frontend | All 5 IndiStream screens live: `/` (home), `/search` (landing + results), `/artists` (directory), `/artist/[id]` (profile), `/work/[id]` (detail). Nav, typography, paper grain, riso-art placeholders, verified-badge system all in place. Raw CSS in `app/globals.css`. Builds clean, 0 npm vulns. |
+| `web/lib/supabase/{client,server}.ts` + `lib/mock.ts` | `@supabase/ssr` helpers for browser + server reads (server uses Next 16 `await cookies()`). `mock.ts` centralizes placeholder fields (location, reach, priceFrom, tag, verified) until schema grows. |
 | `supabase/migrations/0001_init.sql` | Idempotent. Applied to live project. **HNSW** vector index (switched from IVFFlat — IVFFlat lists=100 silently returned 0 rows with our tiny seed set). |
 | `vercel.json` | Configured for combined Next.js + Python function deploy. Untested. |
 
@@ -50,27 +50,36 @@ Last updated: **2026-04-24**
 - Stubs at `/artists` and `/work` (linked from cards / tape-strip / nav) show a placeholder back-to-index note.
 - `npm run lint`: 0 errors, 1 non-blocking warning about font loading strategy. `npm run build`: 7 static routes, clean.
 
+**Detail screens (post-port, same session):**
+- `/work/[id]` — server component, fetches work + artist + more-from-artist; `LicensePanel` client subcomponent for tier selection (3 tiers derived from `artistMock.priceFrom`).
+- `/artist/[id]` — server component, fetches artist + their works; `CommissionForm` client subcomponent (brief textarea + toggleable chips for attach/timeline/budget, not wired to a submit yet).
+- `/artists` — server component, fetches all artists + works, groups by medium. First 3 rendered as featured cards with tape tags, rest as numbered directory rows.
+- Search result work rows and artist cards now deep-link to the correct dynamic route.
+
+**Phase 1.5 — diversity re-rank + real artist search (just shipped):**
+- **`/search` (works mode):** `_rank` now over-fetches (`limit * 5`) from `search_works`, then buckets by `artist_id` and round-robins. Preserves similarity order within each bucket. Visible effect: queries like "quiet ambient music" that previously returned 3 music works from one artist now return one-per-artist until the pool is drained.
+- **`/search/artists` (new endpoint):** `_rank_artists` aggregates top-3 work similarities per artist (mean), joins `artists` for `display_name` + `bio`, returns a ranked list with `top_work_title`, `top_work_medium`, `matching_works`. No schema change — reuses existing work embeddings.
+- **`SearchPage`:** artist mode now fetches `/search/artists` by current query (previously listed all 5 seeded artists regardless of query). Artist cards show `{score}% match · via "{top_work_title}"`.
+- Tested semantically: "foggy coast" → Leo Brown (quiet landscapes, 0.46) → Ava Chen (coastal illustrator, 0.43) → Sora Kim (synth, 0.30). Consistent with bios.
+
 ---
 
 ## What to do next (sequenced)
 
-### 1. Build the stub screens for real
+### 1. Schema alignment — drop `lib/mock.ts`
 
-The biggest visible gap is now the screens we didn't port. In priority order:
+The UI is driven by real data for title / description / medium / bios / search scores, but these fields are still mocked per artist: `location`, `reach`, `priceFrom`, `tag` (emerging/new/established), `verified`. Proposal:
 
-- [ ] **Work detail** (`/work/[id]`) — hero + license tier panel + "more from this artist" strip. Needs price + license tier seed data (or hardcoded for now).
-- [ ] **Artist profile** (`/artist/[id]`) — portrait + bio + available works grid + custom commission form. Can mostly use the `artists` + `works` tables we already have.
-- [ ] **Artists directory** (`/artists`) — trending cards + numbered table.
+- [ ] Migration `0002_artist_profile.sql`: add `location text`, `website_url text`, `attestation_tier attestation_tier` (enum: `self_declared` | `verified`) on `public.artists`.
+- [ ] Migration `0003_work_pricing.sql`: add `price_from_cents int`, `duration_seconds int` on `public.works`. Optional `license_tiers jsonb` for per-work overrides.
+- [ ] Update `scripts/seed.py` to populate the new fields.
+- [ ] Replace `lib/mock.ts` usage call-site-by-call-site, then delete the file.
 
-### 2. Phase 1.5 — diversity re-rank (the "pair semantic meanings" piece)
+### 2. Phase 1.5 continued (optional)
 
-Current `/search` returns pure cosine similarity. To improve relevance and avoid one artist dominating results:
-
-- [ ] In `_rank`, over-fetch from `search_works` (e.g., `match_count = limit * 5`).
-- [ ] Re-rank in Python to spread across `medium` and `artist_id`. Start with round-robin by `artist_id` (dead simple, cheap, interpretable). If not good enough, MMR (Maximal Marginal Relevance) using the stored embeddings.
-- [ ] Consider hybrid: blend cosine score with a keyword match over `title`/`description` (BM25 or Postgres `ts_rank`). Low priority until we see real queries.
+- [ ] Consider a real bio/name embedding for artists (new `embedding` column on `public.artists`) so artist search finds people without works yet. Current derivation from works is fine until we onboard artists who haven't listed anything.
+- [ ] Hybrid ranking: blend cosine with a lexical match on `title`/`description` (Postgres `ts_rank`). Only do this if real queries expose the need.
 - [ ] Return `total_candidates` in the response so the frontend can show "ranked N of M" if useful.
-- [ ] Add **artist search** endpoint so search mode=artist becomes real (embed `display_name + bio`, query against it). Currently placeholder (lists all seeded artists).
 
 ### 3. Phase 2 — artist onboarding
 
@@ -101,9 +110,10 @@ Current `/search` returns pure cosine similarity. To improve relevance and avoid
 - **RLS write chain:** `works` insert requires an `artists` row tied to `auth.uid()`. The onboarding flow must create that row first — easy to forget.
 - **`search_works` RPC runs under caller RLS** (not `security definer`). Fine now; flag if we ever restrict work visibility.
 - **Key-format mix:** `api/.env` uses legacy JWT service key; `web/.env.local` uses new `sb_publishable_*`. Both work, worth unifying later.
-- **Verified tier is visual-only** (hardcoded whitelist in `SearchPage.tsx`). Add an `attestation_tier` enum column to `public.artists` in phase 2.
+- **Verified tier is visual-only** (hardcoded whitelist in `SearchPage.tsx` + `lib/mock.ts`). Schema-align in the next session.
 - **Mock stats on home** ("412 Artists", "94% threads → license", etc.) are prototype copy, not live numbers. Replace with derived queries before anything ships externally.
 - **Font loading warning** (`@next/next/no-page-custom-font`): converting `<link>` → `next/font/google` would silence it, at the cost of reworking every `font-family: 'Fraunces'` CSS reference to `var(--font-fraunces)`. Deferred.
+- **Artist search is derivative** — scores come from aggregating work similarities, so an artist with no works yet is invisible to search. Fine for current seed data; revisit when onboarding lets artists sign up before listing.
 
 ---
 
@@ -114,3 +124,6 @@ Current `/search` returns pure cosine similarity. To improve relevance and avoid
 - ~~Corrupted `requirements.txt` (leading "I h")~~ — fixed.
 - ~~`httpx==0.28.1` vs `supabase==2.10.0` conflict~~ — pinned `httpx==0.27.2`.
 - ~~IVFFlat `lists=100` silently returns 0 rows on tiny datasets~~ — switched index to HNSW.
+- ~~One artist can dominate the top-K in work search~~ — diversity re-rank via round-robin by `artist_id` in `_rank`.
+- ~~Artist search is a placeholder listing all seeded artists~~ — new `/search/artists` endpoint aggregates work scores by artist.
+- ~~`str | None` used in Pydantic models~~ — python 3.9 incompatible; switched to `Optional[str]`.

@@ -23,6 +23,16 @@ type Artist = {
   bio: string | null;
 };
 
+type ArtistResult = {
+  artist_id: string;
+  display_name: string;
+  bio: string | null;
+  score: number;
+  top_work_title: string;
+  top_work_medium: string;
+  matching_works: number;
+};
+
 // Visual-only attestation — hardcoded for MVP.
 const VERIFIED_ARTISTS = new Set(["Ava Chen", "Noah Patel"]);
 
@@ -71,9 +81,11 @@ function SearchResults({
   const [medium, setMedium] = useState<Medium>("any");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [applied, setApplied] = useState<Set<string>>(new Set());
   const [applyLabel, setApplyLabel] = useState("Apply");
 
   const [artists, setArtists] = useState<Artist[]>([]);
+  const [artistResults, setArtistResults] = useState<ArtistResult[]>([]);
   const [works, setWorks] = useState<WorkResult[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,22 +107,25 @@ function SearchResults({
   }, []);
 
   useEffect(() => {
-    if (mode !== "work") return;
     const q = query.trim();
     if (!q) return;
+    const augmented = applied.size
+      ? `${q}. ${Array.from(applied).join(", ")}`
+      : q;
     let cancelled = false;
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
+    const endpoint = mode === "artist" ? "/search/artists" : "/search";
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: q, limit: 20 }),
+      body: JSON.stringify({ query: augmented, limit: 20 }),
     })
       .then(async (res) => {
         if (!res.ok) throw new Error(`search failed: ${res.status}`);
-        const data = (await res.json()) as WorkResult[];
-        if (!cancelled) {
-          setWorks(data);
-          setError(null);
-        }
+        const data = await res.json();
+        if (cancelled) return;
+        if (mode === "artist") setArtistResults(data as ArtistResult[]);
+        else setWorks(data as WorkResult[]);
+        setError(null);
       })
       .catch((e: unknown) => {
         if (!cancelled)
@@ -119,7 +134,7 @@ function SearchResults({
     return () => {
       cancelled = true;
     };
-  }, [mode, query]);
+  }, [mode, query, applied]);
 
   const artistById = useMemo(() => {
     const m = new Map<string, Artist>();
@@ -128,10 +143,10 @@ function SearchResults({
   }, [artists]);
 
   const filteredArtists = useMemo(() => {
-    let list = artists;
+    let list = artistResults;
     if (verifiedOnly) list = list.filter((a) => VERIFIED_ARTISTS.has(a.display_name));
     return list;
-  }, [artists, verifiedOnly]);
+  }, [artistResults, verifiedOnly]);
 
   const filteredWorks = useMemo(() => {
     let list = works;
@@ -155,8 +170,14 @@ function SearchResults({
   }
 
   function onApply() {
-    setApplyLabel(picked.size ? "Filtered" : "Pick chips above");
-    setTimeout(() => setApplyLabel("Apply"), 1800);
+    if (picked.size === 0 && applied.size === 0) {
+      setApplyLabel("Pick chips above");
+      setTimeout(() => setApplyLabel("Apply"), 1800);
+      return;
+    }
+    setApplied(new Set(picked));
+    setApplyLabel(picked.size ? "Applied" : "Cleared");
+    setTimeout(() => setApplyLabel("Apply"), 1200);
   }
 
   function setModeAndRefetch(m: Mode) {
@@ -263,7 +284,13 @@ function SearchResults({
           <div className="count">
             {mode === "artist" ? filteredArtists.length : filteredWorks.length}{" "}
             {mode === "artist" ? "artists" : "works"},{" "}
-            <em>{verifiedOnly ? "verified only" : "ranked by feel"}</em>
+            <em>
+              {verifiedOnly
+                ? "verified only"
+                : applied.size
+                ? `refined by ${Array.from(applied).join(" · ")}`
+                : "ranked by feel"}
+            </em>
           </div>
           <div className="sort">Sort · Relevance ↓</div>
         </div>
@@ -279,7 +306,11 @@ function SearchResults({
         {mode === "artist" ? (
           <div className="results-grid">
             {filteredArtists.map((a, i) => (
-              <Link key={a.id} href={`/artist/${a.id}`} className="artist-card">
+              <Link
+                key={a.artist_id}
+                href={`/artist/${a.artist_id}`}
+                className="artist-card"
+              >
                 <div className="img-wrap">
                   <div className={`art ${artFor(i)}`} />
                   <span className="no">№ {String(i + 1).padStart(2, "0")}</span>
@@ -292,17 +323,27 @@ function SearchResults({
                     <span className="attest-badge">self-declared</span>
                   )}
                 </h3>
-                <div className="sub">Artist · Independent</div>
-                <div className="blurb">&ldquo;{a.bio ?? "No bio yet."}&rdquo;</div>
+                <div className="sub">
+                  {a.top_work_medium} · Independent
+                </div>
+                <div className="blurb">
+                  &ldquo;{a.bio ?? "No bio yet."}&rdquo;
+                </div>
                 <div className="foot">
-                  <span className="match">·  {(90 - i * 4)}% match</span>
-                  <span className="reach">view profile</span>
+                  <span className="match">
+                    · {(a.score * 100).toFixed(0)}% match · via &ldquo;
+                    {a.top_work_title}&rdquo;
+                  </span>
+                  <span className="reach">
+                    {a.matching_works} matching{" "}
+                    {a.matching_works === 1 ? "work" : "works"}
+                  </span>
                 </div>
               </Link>
             ))}
             {filteredArtists.length === 0 && !error && (
               <div className="empty-note" style={{ gridColumn: "1 / -1" }}>
-                No artists match. (Full artist search arrives in phase 2; for now this lists the seeded roster.)
+                No artists match.
               </div>
             )}
           </div>
