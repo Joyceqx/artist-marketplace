@@ -21,20 +21,21 @@ type Artist = {
   id: string;
   display_name: string;
   bio: string | null;
+  attestation_tier: string | null;
 };
 
 type ArtistResult = {
   artist_id: string;
   display_name: string;
   bio: string | null;
+  location: string | null;
+  attestation_tier: string;
+  reach_score: number;
   score: number;
   top_work_title: string;
   top_work_medium: string;
   matching_works: number;
 };
-
-// Visual-only attestation — hardcoded for MVP.
-const VERIFIED_ARTISTS = new Set(["Ava Chen", "Noah Patel"]);
 
 const MEDIA: { label: string; value: Medium }[] = [
   { label: "Music", value: "music" },
@@ -94,7 +95,7 @@ function SearchResults({
     const supabase = createClient();
     supabase
       .from("artists")
-      .select("id, display_name, bio")
+      .select("id, display_name, bio, attestation_tier")
       .order("display_name")
       .then(({ data, error }) => {
         if (cancelled) return;
@@ -144,7 +145,8 @@ function SearchResults({
 
   const filteredArtists = useMemo(() => {
     let list = artistResults;
-    if (verifiedOnly) list = list.filter((a) => VERIFIED_ARTISTS.has(a.display_name));
+    if (verifiedOnly)
+      list = list.filter((a) => a.attestation_tier === "verified");
     return list;
   }, [artistResults, verifiedOnly]);
 
@@ -154,7 +156,7 @@ function SearchResults({
     if (verifiedOnly) {
       list = list.filter((w) => {
         const a = artistById.get(w.artist_id);
-        return a ? VERIFIED_ARTISTS.has(a.display_name) : false;
+        return a ? a.attestation_tier === "verified" : false;
       });
     }
     return list;
@@ -317,14 +319,14 @@ function SearchResults({
                 </div>
                 <h3>
                   {a.display_name}{" "}
-                  {VERIFIED_ARTISTS.has(a.display_name) ? (
+                  {a.attestation_tier === "verified" ? (
                     <span className="verified-badge">verified</span>
                   ) : (
                     <span className="attest-badge">self-declared</span>
                   )}
                 </h3>
                 <div className="sub">
-                  {a.top_work_medium} · Independent
+                  {a.top_work_medium} · {a.location ?? "Independent"}
                 </div>
                 <div className="blurb">
                   &ldquo;{a.bio ?? "No bio yet."}&rdquo;
@@ -352,7 +354,7 @@ function SearchResults({
             {filteredWorks.map((w, i) => {
               const a = artistById.get(w.artist_id);
               const name = a?.display_name ?? "Unknown";
-              const verified = VERIFIED_ARTISTS.has(name);
+              const verified = a?.attestation_tier === "verified";
               return (
                 <Link key={w.work_id} href={`/work/${w.work_id}`} className="work-row">
                   <div className="work-row-no">№ {String(i + 1).padStart(2, "0")}</div>

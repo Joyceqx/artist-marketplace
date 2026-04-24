@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, artistMock, mediumMock } from "@/lib/mock";
+import { artFor, formatPrice } from "@/lib/mock";
 import { LicensePanel } from "@/components/LicensePanel";
 
 type Params = { id: string };
@@ -12,7 +12,9 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
 
   const { data: work } = await supabase
     .from("works")
-    .select("id, title, description, medium, artist_id, created_at")
+    .select(
+      "id, title, description, medium, artist_id, price_from_cents, created_at",
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -26,38 +28,36 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
 
   const { data: more } = await supabase
     .from("works")
-    .select("id, title, medium")
+    .select("id, title, medium, price_from_cents")
     .eq("artist_id", work.artist_id)
     .neq("id", work.id)
     .limit(4);
 
-  const mm = mediumMock(work.medium);
-  const am = artist ? artistMock(artist.display_name) : { priceFrom: 40 };
-
+  const baseCents = work.price_from_cents ?? 4000;
   const tiers = [
     {
       key: "personal",
       title: "Personal / small creator",
       desc: "under 10k views, non-commercial",
-      price: am.priceFrom,
+      price: Math.round(baseCents / 100),
     },
     {
       key: "commercial",
       title: "Standard commercial",
       desc: "brand content, ads under $50k spend",
-      price: am.priceFrom * 4,
+      price: Math.round((baseCents * 4) / 100),
     },
     {
       key: "buyout",
       title: "Exclusive buyout",
       desc: "removed from marketplace",
-      price: am.priceFrom * 22,
+      price: Math.round((baseCents * 22) / 100),
     },
   ];
 
   const year = work.created_at
     ? new Date(work.created_at).getFullYear()
-    : 2024;
+    : new Date().getFullYear();
 
   return (
     <section className="work">
@@ -74,22 +74,22 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
               <span className="stamp">Original · {year}</span>
             </span>
           </div>
-          <div className="work-player">
-            <div className="play">▶</div>
-            <div className="track">
-              <span className="track-fill" />
-              <span className="track-dot" />
+          {work.medium === "music" && (
+            <div className="work-player">
+              <div className="play">▶</div>
+              <div className="track">
+                <span className="track-fill" />
+                <span className="track-dot" />
+              </div>
+              <div className="time">1:14 / 3:22</div>
             </div>
-            <div className="time">
-              1:14 / {mm.duration !== "—" ? mm.duration : "3:22"}
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="work-info">
           <div className="kicker">
             {work.medium.charAt(0).toUpperCase() + work.medium.slice(1)} ·{" "}
-            Original · {mm.duration !== "—" ? mm.duration : "—"}
+            Original
           </div>
           <h1>{work.title}.</h1>
           {artist && (
@@ -116,8 +116,8 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
               <div className="v">available on request</div>
             </div>
             <div className="cell">
-              <div className="k">Best for</div>
-              <div className="v">film, ads, editorial</div>
+              <div className="k">Starting at</div>
+              <div className="v">{formatPrice(work.price_from_cents)}</div>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
                 <div className="meta">
                   <span>{w.medium}</span>
                   <span className="price">
-                    from ${mediumMock(w.medium).priceFrom}
+                    from {formatPrice(w.price_from_cents)}
                   </span>
                 </div>
               </Link>

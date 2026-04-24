@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, artistMock } from "@/lib/mock";
+import { artFor, formatPrice } from "@/lib/mock";
 
 const FEATURED_TAPE: Array<{ label: string; style?: React.CSSProperties }> = [
   { label: "trending" },
@@ -14,27 +14,52 @@ const FEATURED_TAPE: Array<{ label: string; style?: React.CSSProperties }> = [
 const MEDIA_CHIPS = ["All", "Music", "Illustration", "Video", "Writing"];
 const SORT_CHIPS = ["Trending", "Newest", "A–Z"];
 
+type ArtistRow = {
+  id: string;
+  display_name: string;
+  bio: string | null;
+  location: string | null;
+  attestation_tier: string | null;
+};
+
+type WorkRow = {
+  id: string;
+  artist_id: string;
+  medium: string;
+  price_from_cents: number | null;
+};
+
 export default async function ArtistsPage() {
   const supabase = await createClient();
 
   const { data: artistsRaw } = await supabase
     .from("artists")
-    .select("id, display_name, bio")
+    .select("id, display_name, bio, location, attestation_tier")
     .order("display_name");
 
   const { data: worksRaw } = await supabase
     .from("works")
-    .select("id, artist_id, medium");
+    .select("id, artist_id, medium, price_from_cents");
 
-  const artists = artistsRaw ?? [];
-  const worksByArtist = new Map<string, { count: number; mediums: Set<string> }>();
-  for (const w of worksRaw ?? []) {
+  const artists = (artistsRaw ?? []) as ArtistRow[];
+  const worksByArtist = new Map<
+    string,
+    { count: number; mediums: Set<string>; minPrice: number | null }
+  >();
+  for (const w of (worksRaw ?? []) as WorkRow[]) {
     const entry = worksByArtist.get(w.artist_id) ?? {
       count: 0,
       mediums: new Set<string>(),
+      minPrice: null as number | null,
     };
     entry.count += 1;
     entry.mediums.add(w.medium);
+    if (w.price_from_cents != null) {
+      entry.minPrice =
+        entry.minPrice == null
+          ? w.price_from_cents
+          : Math.min(entry.minPrice, w.price_from_cents);
+    }
     worksByArtist.set(w.artist_id, entry);
   }
 
@@ -97,7 +122,6 @@ export default async function ArtistsPage() {
           </div>
           <div className="af-grid">
             {featured.map((a, i) => {
-              const mock = artistMock(a.display_name);
               const tape = FEATURED_TAPE[i] ?? FEATURED_TAPE[0];
               const stats = worksByArtist.get(a.id);
               return (
@@ -117,7 +141,7 @@ export default async function ArtistsPage() {
                   </div>
                   <h3>{a.display_name}</h3>
                   <div className="af-sub">
-                    {primaryMedium(a.id)} · {mock.location}
+                    {primaryMedium(a.id)} · {a.location ?? "Independent"}
                   </div>
                   <div className="af-quote">
                     &ldquo;{a.bio ?? "No bio yet."}&rdquo;
@@ -126,7 +150,7 @@ export default async function ArtistsPage() {
                     <span>
                       {String(stats?.count ?? 0).padStart(2, "0")} works
                     </span>
-                    <span>from ${mock.priceFrom}</span>
+                    <span>from {formatPrice(stats?.minPrice)}</span>
                     <span className="arr">→</span>
                   </div>
                 </Link>
@@ -155,7 +179,6 @@ export default async function ArtistsPage() {
             <div style={{ textAlign: "right" }}>From</div>
           </div>
           {rest.map((a, i) => {
-            const mock = artistMock(a.display_name);
             const stats = worksByArtist.get(a.id);
             return (
               <Link key={a.id} href={`/artist/${a.id}`} className="al-row">
@@ -164,22 +187,22 @@ export default async function ArtistsPage() {
                 </div>
                 <div className="al-name">
                   {a.display_name}
-                  {mock.tag && (
+                  {a.attestation_tier === "verified" && (
                     <>
                       {" "}
                       <span className="al-dot">·</span>{" "}
-                      <span className="al-tag">{mock.tag}</span>
+                      <span className="al-tag">verified</span>
                     </>
                   )}
                 </div>
                 <div className="al-meta">
-                  {primaryMedium(a.id)} · {mock.location}
+                  {primaryMedium(a.id)} · {a.location ?? "Independent"}
                 </div>
                 <div className="al-sig">{a.bio ?? "No bio yet."}</div>
                 <div className="al-works">
                   {String(stats?.count ?? 0).padStart(2, "0")}
                 </div>
-                <div className="al-price">${mock.priceFrom}</div>
+                <div className="al-price">{formatPrice(stats?.minPrice)}</div>
               </Link>
             );
           })}

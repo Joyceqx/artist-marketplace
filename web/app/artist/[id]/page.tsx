@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { artFor, artistMock, mediumMock } from "@/lib/mock";
+import { artFor, formatPrice, formatReach } from "@/lib/mock";
 import { CommissionForm } from "@/components/CommissionForm";
 
 type Params = { id: string };
@@ -16,7 +16,9 @@ export default async function ArtistPage({
 
   const { data: artist } = await supabase
     .from("artists")
-    .select("id, display_name, bio, created_at")
+    .select(
+      "id, display_name, bio, location, attestation_tier, reach_score, created_at",
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -24,18 +26,24 @@ export default async function ArtistPage({
 
   const { data: works } = await supabase
     .from("works")
-    .select("id, title, medium, created_at")
+    .select("id, title, medium, price_from_cents, created_at")
     .eq("artist_id", artist.id)
     .order("created_at", { ascending: false });
 
-  const mock = artistMock(artist.display_name);
   const memberYear = artist.created_at
     ? new Date(artist.created_at).getFullYear()
     : new Date().getFullYear();
 
-  const firstName = artist.display_name.split(" ")[0];
+  const verified = artist.attestation_tier === "verified";
+  const minPrice =
+    works && works.length
+      ? Math.min(...works.map((w) => w.price_from_cents ?? 4000))
+      : null;
+  const location = artist.location ?? "Independent";
+
   const [first, ...rest] = artist.display_name.split(" ");
   const last = rest.join(" ");
+  const firstName = first;
 
   return (
     <section className="artist-page">
@@ -53,8 +61,8 @@ export default async function ArtistPage({
         </div>
         <div className="info">
           <div className="kicker">
-            Independent · {mock.location}
-            {mock.verified ? " · Verified ✓" : ""}
+            Independent · {location}
+            {verified ? " · Verified ✓" : ""}
           </div>
           <h1>
             {first}
@@ -73,17 +81,17 @@ export default async function ArtistPage({
           <div className="facts">
             <div className="cell">
               <div className="k">Based</div>
-              <div className="v">{mock.location}</div>
+              <div className="v">{location}</div>
             </div>
             <div className="cell">
               <div className="k">Reach</div>
-              <div className="v">{mock.reach}</div>
+              <div className="v">{formatReach(artist.reach_score)}</div>
             </div>
             <div className="cell">
               <div className="k">Works listed</div>
               <div className="v">
-                {String(works?.length ?? 0).padStart(2, "0")} · from $
-                {mock.priceFrom}
+                {String(works?.length ?? 0).padStart(2, "0")} · from{" "}
+                {formatPrice(minPrice)}
               </div>
             </div>
             <div className="cell">
@@ -121,7 +129,7 @@ export default async function ArtistPage({
               <div className="meta">
                 <span>{w.medium}</span>
                 <span className="price">
-                  from ${mediumMock(w.medium).priceFrom}
+                  from {formatPrice(w.price_from_cents)}
                 </span>
               </div>
             </Link>

@@ -53,6 +53,9 @@ class ArtistResult(BaseModel):
     artist_id: str
     display_name: str
     bio: Optional[str]
+    location: Optional[str]
+    attestation_tier: str
+    reach_score: int
     score: float
     top_work_title: str
     top_work_medium: str
@@ -120,7 +123,7 @@ def _rank_artists(embedding: list[float], limit: int) -> list[ArtistResult]:
     artist_ids = list(by_artist.keys())
     artists_resp = (
         _supabase.table("artists")
-        .select("id, display_name, bio")
+        .select("id, display_name, bio, location, attestation_tier, reach_score")
         .in_("id", artist_ids)
         .execute()
     )
@@ -139,6 +142,9 @@ def _rank_artists(embedding: list[float], limit: int) -> list[ArtistResult]:
                 artist_id=aid,
                 display_name=m["display_name"],
                 bio=m.get("bio"),
+                location=m.get("location"),
+                attestation_tier=m.get("attestation_tier") or "self_declared",
+                reach_score=int(m.get("reach_score") or 0),
                 score=artist_score,
                 top_work_title=top[0]["title"],
                 top_work_medium=top[0]["medium"],
