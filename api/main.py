@@ -31,7 +31,7 @@ _supabase = create_client(
 )
 
 
-@app.get("/health")
+@app.get("/api/health")
 def health():
     return {"status": "ok"}
 
@@ -156,13 +156,13 @@ def _rank_artists(embedding: list[float], limit: int) -> list[ArtistResult]:
     return ranked[:limit]
 
 
-@app.post("/search", response_model=list[SearchResult])
+@app.post("/api/search", response_model=list[SearchResult])
 def search(req: SearchRequest):
     embedding = _embed(req.query)
     return _rank(embedding, req.limit)
 
 
-@app.post("/search/artists", response_model=list[ArtistResult])
+@app.post("/api/search/artists", response_model=list[ArtistResult])
 def search_artists(req: SearchRequest):
     embedding = _embed(req.query)
     return _rank_artists(embedding, req.limit)
