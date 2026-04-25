@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { portraitFor } from "@/lib/format";
 import { SearchLanding } from "@/components/SearchLanding";
+import { SearchThinking } from "@/components/SearchThinking";
 
 type Mode = "artist" | "work";
 type Medium = "music" | "illustration" | "video" | "character" | "any";
@@ -47,17 +48,21 @@ const MEDIA: { label: string; value: Medium }[] = [
   { label: "Any", value: "any" },
 ];
 
-const REFINE_GROUPS: { label: string; chips: string[] }[] = [
-  { label: "Feel", chips: ["less jazzy", "more tape", "warmer", "darker"] },
-  { label: "Budget", chips: ["under $200", "$200–500", "$500+"] },
-  { label: "Availability", chips: ["this week", "this month"] },
-];
+const BUDGET_CHIPS = ["under $200", "$200–500", "$500+"];
 
 const ART_CYCLE = ["a2", "a3", "a4", "a5", "a6"];
 
 function artFor(i: number) {
   return ART_CYCLE[i % ART_CYCLE.length];
 }
+
+function setsEqual(a: Set<string>, b: Set<string>) {
+  if (a.size !== b.size) return false;
+  for (const x of a) if (!b.has(x)) return false;
+  return true;
+}
+
+const MIN_THINKING_MS = 1500;
 
 export function SearchPage() {
   const params = useSearchParams();
@@ -78,19 +83,35 @@ function SearchResults({
   initialQ: string;
   initialMode: Mode;
 }) {
-
+  // Deferred-apply: staged = what the user has typed/clicked, applied =
+  // what the last fetch ran with. Apply commits staged → applied. Only
+  // medium chips bypass this (client-side filter on already-fetched data).
   const [query, setQuery] = useState(initialQ);
   const [mode, setMode] = useState<Mode>(initialMode);
-  const [medium, setMedium] = useState<Medium>("any");
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [verifiedStaged, setVerifiedStaged] = useState(false);
+
+  const [appliedQuery, setAppliedQuery] = useState(initialQ);
+  const [appliedMode, setAppliedMode] = useState<Mode>(initialMode);
   const [applied, setApplied] = useState<Set<string>>(new Set());
+  const [verifiedApplied, setVerifiedApplied] = useState(false);
+
+  const [medium, setMedium] = useState<Medium>("any");
   const [applyLabel, setApplyLabel] = useState("Apply");
 
   const [artists, setArtists] = useState<Artist[]>([]);
   const [artistResults, setArtistResults] = useState<ArtistResult[]>([]);
   const [works, setWorks] = useState<WorkResult[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // Loading is derived: when fetched-key doesn't match current-key, show thinking.
+  const currentFetchKey = useMemo(
+    () =>
+      `${appliedMode}::${appliedQuery.trim()}::${Array.from(applied).sort().join(",")}`,
+    [appliedMode, appliedQuery, applied],
+  );
+  const [lastFetchedKey, setLastFetchedKey] = useState<string | null>(null);
+  const isLoading = currentFetchKey !== lastFetchedKey;
 
   useEffect(() => {
     let cancelled = false;
@@ -110,13 +131,15 @@ function SearchResults({
   }, []);
 
   useEffect(() => {
-    const q = query.trim();
+    const q = appliedQuery.trim();
     if (!q) return;
     const augmented = applied.size
       ? `${q}. ${Array.from(applied).join(", ")}`
       : q;
     let cancelled = false;
-    const endpoint = mode === "artist" ? "/search/artists" : "/search";
+    const startedAt = Date.now();
+    const endpoint = appliedMode === "artist" ? "/search/artists" : "/search";
+    const keyForThisRequest = currentFetchKey;
     fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -126,9 +149,16 @@ function SearchResults({
         if (!res.ok) throw new Error(`search failed: ${res.status}`);
         const data = await res.json();
         if (cancelled) return;
-        if (mode === "artist") setArtistResults(data as ArtistResult[]);
+        if (appliedMode === "artist") setArtistResults(data as ArtistResult[]);
         else setWorks(data as WorkResult[]);
         setError(null);
+        // Hold the thinking screen for at least MIN_THINKING_MS so the
+        // 4-step animation has time to play through.
+        const elapsed = Date.now() - startedAt;
+        const wait = Math.max(0, MIN_THINKING_MS - elapsed);
+        setTimeout(() => {
+          if (!cancelled) setLastFetchedKey(keyForThisRequest);
+        }, wait);
       })
       .catch((e: unknown) => {
         if (!cancelled)
@@ -137,7 +167,8 @@ function SearchResults({
     return () => {
       cancelled = true;
     };
-  }, [mode, query, applied]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appliedMode, appliedQuery, applied]);
 
   const artistById = useMemo(() => {
     const m = new Map<string, Artist>();
@@ -147,22 +178,28 @@ function SearchResults({
 
   const filteredArtists = useMemo(() => {
     let list = artistResults;
-    if (verifiedOnly)
+    if (verifiedApplied)
       list = list.filter((a) => a.attestation_tier === "verified");
     return list;
-  }, [artistResults, verifiedOnly]);
+  }, [artistResults, verifiedApplied]);
 
   const filteredWorks = useMemo(() => {
     let list = works;
     if (medium !== "any") list = list.filter((w) => w.medium === medium);
-    if (verifiedOnly) {
+    if (verifiedApplied) {
       list = list.filter((w) => {
         const a = artistById.get(w.artist_id);
         return a ? a.attestation_tier === "verified" : false;
       });
     }
     return list;
-  }, [works, medium, verifiedOnly, artistById]);
+  }, [works, medium, verifiedApplied, artistById]);
+
+  const dirty =
+    query.trim() !== appliedQuery.trim() ||
+    mode !== appliedMode ||
+    !setsEqual(picked, applied) ||
+    verifiedStaged !== verifiedApplied;
 
   function togglePicked(chip: string) {
     setPicked((prev) => {
@@ -174,32 +211,36 @@ function SearchResults({
   }
 
   function onApply() {
-    if (picked.size === 0 && applied.size === 0) {
-      setApplyLabel("Pick chips above");
-      setTimeout(() => setApplyLabel("Apply"), 1800);
-      return;
-    }
+    if (!dirty) return;
+    setAppliedQuery(query);
+    setAppliedMode(mode);
     setApplied(new Set(picked));
-    setApplyLabel(picked.size ? "Applied" : "Cleared");
+    setVerifiedApplied(verifiedStaged);
+    setApplyLabel("Applied");
     setTimeout(() => setApplyLabel("Apply"), 1200);
   }
 
-  function setModeAndRefetch(m: Mode) {
-    setMode(m);
+  if (isLoading) {
+    // key={currentFetchKey} remounts on each new search so step state resets.
+    return <SearchThinking key={currentFetchKey} query={query.trim()} />;
   }
 
-  const pickedCount = picked.size;
+  const pickedCount = picked.size + (verifiedStaged ? 1 : 0);
   const currentQuery = query.trim() || "—";
+  const resultCount =
+    mode === "artist" ? filteredArtists.length : filteredWorks.length;
 
   return (
     <section className="search">
       <aside className="brief-col">
-        <div className="kicker">Searching</div>
+        <div className="kicker">Your brief</div>
         <h3
           contentEditable
           suppressContentEditableWarning
           spellCheck={false}
-          onBlur={(e) => setQuery(e.currentTarget.textContent?.replace(/\.$/, "") ?? "")}
+          onBlur={(e) =>
+            setQuery(e.currentTarget.textContent?.replace(/\.$/, "") ?? "")
+          }
           title="Edit to refine"
         >
           {currentQuery}.
@@ -210,27 +251,18 @@ function SearchResults({
           <button
             type="button"
             className={`search-mode ${mode === "artist" ? "on" : ""}`}
-            onClick={() => setModeAndRefetch("artist")}
+            onClick={() => setMode("artist")}
           >
             Artists
           </button>
           <button
             type="button"
             className={`search-mode ${mode === "work" ? "on" : ""}`}
-            onClick={() => setModeAndRefetch("work")}
+            onClick={() => setMode("work")}
           >
             Works
           </button>
         </div>
-
-        <label className="verified-row">
-          <input
-            type="checkbox"
-            checked={verifiedOnly}
-            onChange={(e) => setVerifiedOnly(e.target.checked)}
-          />
-          Verified only <span className="verified-badge" style={{ fontSize: 8 }}>✓</span>
-        </label>
 
         <div className="medium-row">
           {MEDIA.map((m) => (
@@ -245,39 +277,46 @@ function SearchResults({
           ))}
         </div>
 
-        <div className="brief-thread">
-          <div className="brief-resp">
-            ↳ Showing{" "}
-            <strong>
-              {mode === "artist" ? filteredArtists.length : filteredWorks.length}{" "}
-              {mode === "artist" ? "artists" : "works"}
-            </strong>
-            . Narrow by:
+        <div className="filter-block">
+          <div className="filter-row">
+            <span className="filter-label">Filter by budget</span>
+            <div className="refine-opts">
+              {BUDGET_CHIPS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`sug ${picked.has(c) ? "on" : ""}`}
+                  onClick={() => togglePicked(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {REFINE_GROUPS.map((g) => (
-            <div className="refine-group" key={g.label}>
-              <div className="refine-label">{g.label}</div>
-              <div className="refine-opts">
-                {g.chips.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`sug ${picked.has(c) ? "on" : ""}`}
-                    onClick={() => togglePicked(c)}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
+          <label className="filter-check" htmlFor="verified-only">
+            <input
+              type="checkbox"
+              id="verified-only"
+              checked={verifiedStaged}
+              onChange={(e) => setVerifiedStaged(e.target.checked)}
+            />
+            <span className="bc-box" />
+            <span className="bc-text">Verified artists only</span>
+          </label>
 
-          <button type="button" className="apply-btn" onClick={onApply}>
+          <button
+            type="button"
+            className={`apply-btn ${dirty ? "dirty" : ""}`}
+            onClick={onApply}
+            disabled={!dirty}
+          >
             <span className="lbl">{applyLabel}</span>
             <span className="arrow">→</span>
             <span className="count-preview">
-              {pickedCount ? `${pickedCount} filter${pickedCount > 1 ? "s" : ""} selected` : ""}
+              {pickedCount
+                ? `${pickedCount} filter${pickedCount > 1 ? "s" : ""} selected`
+                : ""}
             </span>
           </button>
         </div>
@@ -286,10 +325,9 @@ function SearchResults({
       <main className="results-col">
         <div className="results-head">
           <div className="count">
-            {mode === "artist" ? filteredArtists.length : filteredWorks.length}{" "}
-            {mode === "artist" ? "artists" : "works"},{" "}
+            {resultCount} {mode === "artist" ? "artists" : "works"},{" "}
             <em>
-              {verifiedOnly
+              {verifiedApplied
                 ? "verified only"
                 : applied.size
                 ? `refined by ${Array.from(applied).join(" · ")}`
@@ -368,8 +406,14 @@ function SearchResults({
               const name = a?.display_name ?? "Unknown";
               const verified = a?.attestation_tier === "verified";
               return (
-                <Link key={w.work_id} href={`/work/${w.work_id}`} className="work-row">
-                  <div className="work-row-no">№ {String(i + 1).padStart(2, "0")}</div>
+                <Link
+                  key={w.work_id}
+                  href={`/work/${w.work_id}`}
+                  className="work-row"
+                >
+                  <div className="work-row-no">
+                    № {String(i + 1).padStart(2, "0")}
+                  </div>
                   <div className="work-row-art">
                     <div className={`art ${artFor(i)}`} />
                     <span className="work-row-play">▶</span>

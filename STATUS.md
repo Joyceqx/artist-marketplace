@@ -106,6 +106,22 @@ This is where the app crosses from demo to product.
 
 ---
 
+## Search UX contract: deferred Apply (2026-04-25)
+
+Every search-affecting control is now Apply-gated. **The fetch only fires on Apply.**
+
+- **Apply-gated** (changing these does NOT trigger a search; user must click Apply):
+  - Prompt edit (the editable `<h3>`)
+  - Mode toggle (Artists / Works)
+  - Budget chips (under $200 / $200–500 / $500+)
+  - Verified-only checkbox
+- **Instant** (no Apply needed; client-side filter on already-fetched data):
+  - Medium chips (Music / Art / Video / IP / Any)
+
+State model in `SearchPage.tsx`: paired staged/applied (`query`/`appliedQuery`, `mode`/`appliedMode`, `picked`/`applied`, `verifiedStaged`/`verifiedApplied`). Apply commits all four pairs in one go. Apply button is disabled (dim) until any staged ≠ applied; turns dark/clickable when dirty; dims again right after click.
+
+Implications for the algo worktree: when ranking changes land, the deferred-apply contract must be preserved. Don't auto-search on prompt or filter changes — the user wants to compose a brief, then commit.
+
 ## Pre-share UI audit (2026-04-25)
 
 Live audit of https://indistream.vercel.app. All 5 pages return HTTP 200 in production; `/api/health`, `/api/search`, `/api/search/artists` all green. **Nothing structurally broken.** Known-rough surface area, deferred deliberately to keep momentum:

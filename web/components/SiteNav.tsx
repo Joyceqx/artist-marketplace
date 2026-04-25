@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/", label: "Index", match: (p: string) => p === "/" },
   { href: "/search", label: "Search", match: (p: string) => p.startsWith("/search") },
   { href: "/artists", label: "Artists", match: (p: string) => p.startsWith("/artists") || p.startsWith("/artist") },
+  { href: "/join", label: "Join", match: (p: string) => p.startsWith("/join") },
 ];
 
 export function SiteNav() {
@@ -27,7 +28,6 @@ export function SiteNav() {
           </Link>
         ))}
         <span style={{ color: "var(--ink-mute)", cursor: "default" }}>Manifesto</span>
-        <span style={{ color: "var(--ink-mute)", cursor: "default" }}>Join</span>
       </div>
       <div className="issue">Issue 08 · Spring 2026</div>
     </nav>
