@@ -8,7 +8,7 @@ Last updated: **2026-04-24**
 
 ## Where we are
 
-**Phase 1.5 + schema alignment + all 5 design screens: complete.** Search works for both artists and works modes, with diversity re-rank on works. Home, search-landing, search-results, work detail, artist profile, and artists directory are all real — driven by live Supabase columns. `lib/format.ts` now only holds display-formatters (price, reach, art-cycle).
+**Phase 1.5 + schema alignment + all 5 design screens + deployed: complete.** Search works for both artists and works modes, with diversity re-rank on works. All pages real-data. Live in production at **https://indistream.vercel.app** (Vercel auto-deploys `main`). `lib/format.ts` now only holds display-formatters (price, reach, art-cycle).
 
 | Area | State |
 |---|---|
@@ -91,17 +91,11 @@ This is where the app crosses from demo to product.
 - [ ] Add `duration_seconds` to `works` (music/video only) — license UI shows real durations.
 - [ ] Replace the hardcoded "412 Artists · 38 Countries · 94% threads → license" stats on home with derived queries (or a single `stats` materialised view).
 
-### 3. Phase 3 — deploy
-
-- [ ] Supabase auth (magic link) in `web/`.
-- [ ] "Become an artist" flow: insert into `public.artists` tied to `auth.uid()` — the RLS writes require this row to exist before `works` inserts succeed. Worth an explicit assertion in the flow.
-- [ ] Work upload: Supabase Storage bucket + `POST /works` endpoint (backend embeds title+description and inserts).
-
-### 4. Phase 3 — listings / commerce terms
+### 3. Phase 3 — listings / commerce terms
 
 - [ ] Listings CRUD for artists.
-- [ ] Public work detail page.
-- [ ] Deploy to Vercel, wire prod env vars, smoke-test end-to-end.
+- [ ] License purchase flow (Stripe?) so the dead "License for $X" buttons become real.
+- [ ] Commission request flow so the dead "Send request →" form posts somewhere.
 
 ---
 
@@ -112,6 +106,25 @@ This is where the app crosses from demo to product.
 
 ---
 
+## Pre-share UI audit (2026-04-25)
+
+Live audit of https://indistream.vercel.app. All 5 pages return HTTP 200 in production; `/api/health`, `/api/search`, `/api/search/artists` all green. **Nothing structurally broken.** Known-rough surface area, deferred deliberately to keep momentum:
+
+**High (mildly embarrassing on a teammate share):**
+- **Home masthead stats are fake.** "412 Artists / 38 Countries / 0 Ads" — real corpus is 30 / 30 / 0. Should derive from DB or remove.
+- **For-buyers band stats are fake.** "94% threads → license · 48h median · 2.1k licenses · 0 takedowns." None of those features exist (no thread, no licensing flow). Replace with aspirational placeholders ("—", "coming once we have buyers") or remove the band.
+- **No "preview" indicator on the live URL.** Issue line reads `Vol. 01 · Issue 08 · Spring 2026` — looks like a real product. Adding `· preview` (or similar) sets the right expectation.
+
+**Medium (visible but not critical):**
+- **Dead "License for $X" + "Ask about stems"** on work detail. Click is a no-op.
+- **Dead "Send request →"** on commission form. No backend route, no toast, just nothing.
+- **Dead nav: "Manifesto" / "Join"** are static `<span>`s — no hover signal, look like decorative labels (acceptable as-is).
+- **Dead footer link: "For enterprise & legal"** is an `<a>` with no `href`.
+
+**Low (defer):**
+- **Mobile responsive** — design is desktop-only. Likely fine if teammates open on laptops.
+- **No loading state** during slow first search after cold start.
+
 ## Open risks / watch-items
 
 - **Next 16 + React 19 + `@supabase/ssr` compat.** Currently fine. If server components start misbehaving, check `@supabase/ssr` release notes first.
@@ -120,7 +133,6 @@ This is where the app crosses from demo to product.
 - **RLS write chain:** `works` insert requires an `artists` row tied to `auth.uid()`. The onboarding flow must create that row first — easy to forget.
 - **`search_works` RPC runs under caller RLS** (not `security definer`). Fine now; flag if we ever restrict work visibility.
 - **Key-format mix:** `api/.env` uses legacy JWT service key; `web/.env.local` uses new `sb_publishable_*`. Both work, worth unifying later.
-- **Mock stats on home** ("412 Artists", "94% threads → license", etc.) are prototype copy, not live numbers. Replace with derived queries before anything ships externally.
 - **Font loading warning** (`@next/next/no-page-custom-font`): converting `<link>` → `next/font/google` would silence it, at the cost of reworking every `font-family: 'Fraunces'` CSS reference to `var(--font-fraunces)`. Deferred.
 - **Artist search is derivative** — scores come from aggregating work similarities, so an artist with no works yet is invisible to search. Fine for current seed data; revisit when onboarding lets artists sign up before listing.
 
@@ -139,3 +151,5 @@ This is where the app crosses from demo to product.
 - ~~Refine chips were cosmetic~~ — Apply now re-runs the search with chips appended to the embedding query; results actually change.
 - ~~Per-artist location/reach/price mocked in `lib/mock.ts`~~ — migration 0002 added real columns, seed backfills, frontend reads DB. File renamed to `lib/format.ts` and slimmed to display helpers.
 - ~~Verified tier is visual-only~~ — now `attestation_tier` enum-ish column; filter is a real DB predicate.
+- ~~Uniform per-medium prices ($40 / $80 / $120 / $140)~~ — `_price_for(artist, title, medium)` in seed.py adds tier multiplier × per-title jitter. Range now $20-$305, 46 distinct values, deterministic on re-run.
+- ~~FastAPI on Vercel Python serverless deploy issues~~ — ported `/api/search` and `/api/search/artists` to Next.js Route Handlers. Single-runtime deploy, no Python in the deploy path. `api/` directory still used for local Python work (`scripts/seed.py`, `scripts/generate_*.py`).
