@@ -13,6 +13,7 @@ Run from api/ with the venv activated:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -100,6 +101,31 @@ MEDIUM_PRICE_CENTS: dict[str, int] = {
 def _embed(client: OpenAI, text: str) -> list[float]:
     resp = client.embeddings.create(model=EMBEDDING_MODEL, input=text)
     return resp.data[0].embedding
+
+
+def _price_for(artist: dict, title: str, medium: str) -> int:
+    """Per-work starting price (cents).
+
+    Combines a per-medium base with an artist-tier multiplier and a
+    deterministic per-title jitter, so re-runs produce stable values.
+    """
+    base = MEDIUM_PRICE_CENTS.get(medium, 4000)
+
+    if artist["attestation_tier"] == "verified":
+        tier_mult = 1.8
+    elif artist["reach_score"] >= 5000:
+        tier_mult = 1.4
+    elif artist["reach_score"] >= 1500:
+        tier_mult = 1.0
+    else:
+        tier_mult = 0.65
+
+    h = int(hashlib.md5(title.encode("utf-8")).hexdigest()[:8], 16)
+    jitter = 0.75 + (h % 1000) / 1000 * 0.5  # 0.75 .. 1.25
+
+    cents = int(base * tier_mult * jitter)
+    # Round to the nearest $5 for clean display.
+    return max(500, (cents // 500) * 500)
 
 
 def _load_synthetic() -> list[dict]:
@@ -197,9 +223,7 @@ def main() -> None:
             title = w["title"]
             description = w["description"]
             medium = w["medium"]
-            price_cents = w.get("price_from_cents") or MEDIUM_PRICE_CENTS.get(
-                medium, 4000
-            )
+            price_cents = _price_for(a, title, medium)
             existing_work = (
                 supabase.table("works")
                 .select("id")
