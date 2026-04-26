@@ -2,22 +2,24 @@
 
 Living doc. Update after each work session.
 
-Last updated: **2026-04-24**
+Last updated: **2026-04-25**
 
 ---
 
 ## Where we are
 
-**Phase 1.5 + schema alignment + all 5 design screens + deployed: complete.** Search works for both artists and works modes, with diversity re-rank on works. All pages real-data. Live in production at **https://indistream.vercel.app** (Vercel auto-deploys `main`). `lib/format.ts` now only holds display-formatters (price, reach, art-cycle).
+**Phase 1 closed (tagged `v0.1.0-phase1`). Phase 2 slice 2a shipped: Google OAuth sign-in.** Search + browse stack is fully real, search-thinking transition runs in front of every fetch, all controls go through Apply. Sign-in works end-to-end (verified locally + prod). Live at **https://indistream.vercel.app** (Vercel auto-deploys `main`). Algo experiments live in a worktree at `~/Desktop/artist-marketplace-algo` on branch `search-experiments`.
 
 | Area | State |
 |---|---|
 | `api/` FastAPI backend | Two live endpoints: `POST /search` (works mode with diversity re-rank via round-robin by `artist_id`) and `POST /search/artists` (artist mode, aggregates top-3 work scores per artist, joins `artists` table). `_embed` / `_rank` / `_rank_artists` are clean seams for future ranking changes. |
 | `api/scripts/seed.py` | Idempotent seeder. 5 artists, 9 works across all 4 mediums. |
-| `web/` Next.js frontend | All 5 IndiStream screens live: `/` (home), `/search` (landing + results), `/artists` (directory), `/artist/[id]` (profile), `/work/[id]` (detail). Nav, typography, paper grain, riso-art placeholders, verified-badge system all in place. Raw CSS in `app/globals.css`. Builds clean, 0 npm vulns. |
-| `web/lib/supabase/{client,server}.ts` + `lib/format.ts` | `@supabase/ssr` helpers for browser + server reads (server uses Next 16 `await cookies()`). `format.ts` = `artFor`, `formatPrice`, `formatReach`. |
-| `supabase/migrations/` | `0001_init` (HNSW index, idempotent policies) + `0002_artist_pricing_and_attestation` (adds `artists.location`, `artists.attestation_tier`, `works.price_from_cents`). Both applied to live project. |
-| `vercel.json` | Configured for combined Next.js + Python function deploy. Untested. |
+| `web/` Next.js frontend | 7 screens live: `/` (home), `/join` (sign-in/apply), `/search` (landing + results + thinking transition), `/me` (gated stub), `/artists` (directory), `/artist/[id]` (profile), `/work/[id]` (detail). Nav swaps Join → Me when signed in. Raw CSS in `app/globals.css`. Builds clean, 0 npm vulns. |
+| `web/app/api/` Route Handlers | Production search runs here (Node serverless on Vercel): `/api/search`, `/api/search/artists`, `/api/health`. The original FastAPI in `api/` stays for local script work (`scripts/seed.py`, `scripts/generate_*.py`) but isn't in the deploy. |
+| `web/app/auth/` | OAuth: `/auth/callback` exchanges the code; `/auth/signout` clears the session. `proxy.ts` (Next 16) refreshes the cookie on every request. |
+| `web/lib/supabase/{client,server,admin}.ts` + `lib/format.ts` | `@supabase/ssr` for browser + server with cookies; `admin.ts` for service-role server reads (search RPC). `format.ts` = `artFor`, `formatPrice`, `formatReach`, `portraitFor`. |
+| `supabase/migrations/` | `0001_init` (HNSW index, idempotent policies) + `0002_artist_pricing_and_attestation`. Both applied to live project. |
+| `vercel.json` | Minimal: `{ "framework": "nextjs" }`. Vercel Root Directory is `web`. |
 
 ---
 
@@ -74,15 +76,15 @@ Last updated: **2026-04-24**
 
 ## What to do next (sequenced)
 
-### 1. Phase 2 — auth + artist onboarding (next big move)
+### 1. Phase 2 slice 2b — artist onboarding (next big move)
 
-This is where the app crosses from demo to product.
+Slice 2a (sign-in) is done. Next: turn the gray "Apply to join" tab into a real onboarding flow.
 
-- [ ] Supabase magic-link auth (anon key OK; no email provider config past Supabase defaults).
-- [ ] "Become an artist" flow: creates an `artists` row tied to `auth.uid()` (RLS already enforces this). Inputs: display_name, bio, location, website_url, primary_platform.
-- [ ] Work upload: Supabase Storage bucket + `POST /works` endpoint that embeds title+description server-side and inserts. RLS on `works.write_own` already requires the caller's artist row to exist.
-- [ ] 6th screen (onboarding) per the prototype: identity → links → terms → optional upload. Single-page submit variant.
-- [ ] Gated routes: `/me` (edit profile), `/me/works` (list/add works).
+- [ ] On submit, create a `public.artists` row tied to `auth.uid()` (RLS already enforces this). Inputs: display_name, bio, location, optional portfolio URL.
+- [ ] On `/me`, detect whether the user has an artists row. If yes → show "Welcome back, edit profile". If no → CTA into Apply form.
+- [ ] Server-side inserts via a Route Handler (`/api/me/profile`?) that reads `auth.getUser()`, validates input, inserts.
+- [ ] Slice 2c (later): work upload — `/api/me/works` POST handler that takes title + description + medium, embeds, inserts.
+- [ ] Slice 2d (later): file upload via Supabase Storage bucket.
 
 ### 2. Smaller follow-ups
 
@@ -105,6 +107,19 @@ This is where the app crosses from demo to product.
 - **Vercel account** is the only outstanding external dep; blocks deploy only.
 
 ---
+
+## Phase 2 slice 2a — Google OAuth (2026-04-25)
+
+Shipped and verified on prod.
+
+- **`/join`** Sign-in tab is OAuth-only now (Google live, Apple grayed "soon"). Apply tab still gray-disabled; wires up in slice 2b.
+- **`/auth/callback`** exchanges the OAuth code for a Supabase session, then redirects to `?next` param (defaults to `/`).
+- **`/auth/signout`** clears the session, redirects home.
+- **`/me`** is gated — redirects to `/join` if no session, shows email + Sign out otherwise. Stub for now; phase 2b will become "edit my artist profile."
+- **`proxy.ts`** (Next 16's renamed middleware) refreshes the Supabase auth cookie on every request so server components always see a current `auth.getUser()`.
+- **Layout** now reads the session server-side and passes `userEmail` to the nav. Nav swaps Join → Me link and shows the user's handle in the top-right when signed in.
+- **Dashboard config done in two places**: Google Cloud Console (OAuth client + consent screen) and Supabase (Sign In / Providers → Google enabled, Site URL + Redirect URLs whitelisted for localhost + prod).
+- **No new env vars** in the app. The provider is configured server-side in Supabase; the client just calls `supabase.auth.signInWithOAuth({ provider: 'google' })`.
 
 ## Search UX contract: deferred Apply (2026-04-25)
 
@@ -156,6 +171,9 @@ Live audit of https://indistream.vercel.app. All 5 pages return HTTP 200 in prod
 
 ## Resolved
 
+- ~~Phase 1 closed~~ — tagged `v0.1.0-phase1` at commit `92dd8e2` (search MVP + diversity rerank + design port + deferred-apply + thinking transition + /join visual).
+- ~~Vercel deploy issues (Python runtime, monorepo detection)~~ — ported FastAPI to Next.js Route Handlers; Vercel Root Directory set to `web`. Single-runtime deploy.
+- ~~Auth missing (sign-in / sign-up flow non-functional)~~ — Google OAuth via Supabase, slice 2a shipped 2026-04-25.
 - ~~`npm audit` 2 moderate advisories~~ — `overrides` pin to postcss ^8.5.10.
 - ~~`0001_init.sql` not idempotent~~ — enums + policies wrapped/guarded.
 - ~~Corrupted `requirements.txt` (leading "I h")~~ — fixed.
