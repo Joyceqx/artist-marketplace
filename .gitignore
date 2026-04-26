@@ -33,6 +33,9 @@ env/
 # OAuth client downloads from Google Cloud Console (contain client_secret)
 client_secret*.json
 
+# MS Office / iWork temp lock files (created while a doc is open)
+~$*
+
 # Editors / OS
 .DS_Store
 .idea/

@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280" />
+<title>IndiStream · Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f1ebdb;
+    --paper-dark: #e8e0ca;
+    --paper-card: #faf5e6;
+    --ink: #1d1a14;
+    --ink-2: #3a362b;
+    --ink-mute: rgba(29, 26, 20, 0.55);
+    --ink-faint: rgba(29, 26, 20, 0.2);
+    --riso-red: #e34a2f;
+    --riso-blue: #2d4d8a;
+    --riso-yellow: #e8b840;
+    --grid: rgba(29, 26, 20, 0.07);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    overflow: hidden;
+  }
+
+  /* paper grain + faint grid (research-notebook feel) */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.15  0 0 0 0 0.1  0 0 0 0 0.05  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+    mix-blend-mode: multiply; opacity: 0.7;
+  }
+
+  .deck {
+    position: fixed; inset: 0; z-index: 2;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 64px 80px;
+    display: none;
+    flex-direction: column;
+    animation: fade 0.5s ease;
+  }
+  .slide.on { display: flex; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* slide chrome */
+  .meta {
+    position: absolute; top: 28px; left: 80px; right: 80px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .meta .brand { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; text-transform: none; letter-spacing: -0.3px; color: var(--ink); }
+  .meta .brand .dot { color: var(--riso-red); }
+  .meta .num { font-variant-numeric: tabular-nums; }
+
+  .progress {
+    position: absolute; bottom: 28px; left: 80px; right: 80px;
+    display: flex; gap: 5px; z-index: 3;
+  }
+  .progress span {
+    flex: 1; height: 2px; background: var(--ink-faint);
+    transition: background 0.25s;
+  }
+  .progress span.done, .progress span.cur { background: var(--ink); }
+  .progress span.cur { background: var(--riso-red); }
+
+  .nav-hint {
+    position: absolute; bottom: 28px; right: 80px; z-index: 4;
+    font-family: 'Caveat', cursive; font-weight: 600; font-size: 18px; color: var(--riso-red);
+    transform: rotate(-2deg);
+    pointer-events: none;
+  }
+
+  /* type system */
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 2.5px; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .h1 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(64px, 9vw, 144px); line-height: 0.92; letter-spacing: -3px;
+    margin: 0; color: var(--ink);
+  }
+  .h2 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(46px, 6vw, 88px); line-height: 0.95; letter-spacing: -2px;
+    margin: 0;
+  }
+  .h3 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 400;
+    font-size: 32px; letter-spacing: -0.5px; margin: 0;
+  }
+  .body {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 22px;
+    line-height: 1.45; color: var(--ink-2); max-width: 760px;
+  }
+  .body em { color: var(--riso-red); font-style: italic; }
+  .body strong { font-weight: 500; color: var(--ink); }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-style: normal; }
+  .red  { color: var(--riso-red); }
+  .blue { color: var(--riso-blue); }
+  .hand {
+    font-family: 'Caveat', cursive; font-weight: 600; color: var(--riso-red);
+    font-size: 24px; transform: rotate(-2deg); display: inline-block;
+  }
+
+  /* slide-specific */
+
+  /* S1 — title */
+  .s1 { justify-content: center; align-items: flex-start; padding-left: 120px; }
+  .s1 .h1 { font-size: clamp(96px, 13vw, 200px); }
+  .s1 .h1 .dot { color: var(--riso-red); }
+  .s1 .sub { margin-top: 20px; font-family: 'Fraunces', serif; font-style: italic; font-size: 28px; color: var(--ink-2); max-width: 720px; }
+  .s1 .stamp {
+    margin-top: 56px; display: inline-block;
+    padding: 6px 14px; border: 2px solid var(--riso-red);
+    color: var(--riso-red); font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    transform: rotate(-2deg);
+  }
+
+  /* S2 — what */
+  .s2 { justify-content: center; }
+  .s2 .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: center; }
+  .s2 .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 36px; }
+  .s2 .stat .v {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: 64px; line-height: 1; color: var(--ink); letter-spacing: -2px;
+  }
+  .s2 .stat.accent .v { color: var(--riso-red); }
+  .s2 .stat .k {
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-mute);
+    margin-top: 6px;
+  }
+
+  /* S3 — mission */
+  .s3 { justify-content: center; align-items: center; text-align: center; padding: 64px 160px; }
+  .s3 .quote {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(54px, 7vw, 104px); line-height: 1.04; letter-spacing: -2.5px;
+  }
+  .s3 .quote em { color: var(--riso-red); font-style: italic; font-weight: 400; }
+  .s3 .quote-sub { margin-top: 36px; font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--ink-2); max-width: 720px; line-height: 1.5; }
+  .s3 .margin {
+    position: absolute; bottom: 90px; left: 80px;
+    font-family: 'Caveat', cursive; color: var(--riso-red); font-weight: 600;
+    font-size: 32px; transform: rotate(-3deg);
+  }
+
+  /* S4 — objective */
+  .s4 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 28px; }
+  .s4 .col h3 { font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 28px; margin: 0 0 14px; }
+  .s4 .col p { font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .s4 .col p em { color: var(--riso-red); font-style: italic; }
+  .s4 .seg-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .s4 .seg {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--ink); display: inline-block;
+    align-self: flex-start;
+  }
+
+  /* S5 — functions */
+  .s5 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 30px; }
+  .s5 .cell { padding-top: 16px; border-top: 1px solid var(--ink); }
+  .s5 .cell .n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--riso-red); }
+  .s5 .cell h4 { font-family: 'Fraunces', serif; font-style: italic; font-size: 26px; line-height: 1.05; margin: 6px 0 8px; letter-spacing: -0.5px; }
+  .s5 .cell p { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; line-height: 1.5; color: var(--ink-2); margin: 0; }
+  .s5 .cell .tag {
+    margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .s5 .cell.shipped .tag { color: var(--ink); }
+  .s5 .cell.shipped .tag::before { content: '✓ '; color: var(--riso-red); }
+  .s5 .cell.next .tag::before { content: '○ '; }
+
+  /* S6, S7 — workflows (flow diagram) */
+  .flow { margin-top: 36px; display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; }
+  .flow .step {
+    flex: 1; min-width: 0; padding: 14px 18px;
+    border: 1px solid var(--ink); background: var(--paper-card);
+    position: relative;
+  }
+  .flow .step .n { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--riso-red); }
+  .flow .step h5 { font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 20px; margin: 4px 0 6px; letter-spacing: -0.3px; }
+  .flow .step p { font-family: 'Fraunces', serif; font-style: italic; font-size: 13px; line-height: 1.4; color: var(--ink-2); margin: 0; }
+  .flow .arrow {
+    width: 32px; flex-shrink: 0; align-self: stretch; display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; color: var(--riso-red); font-size: 18px;
+  }
+  .flow .step.future { background: var(--paper); opacity: 0.5; }
+  .flow .step.future::after { content: 'next slice'; position: absolute; top: -12px; right: 8px; font-family: 'Caveat', cursive; color: var(--riso-red); font-size: 16px; transform: rotate(-2deg); }
+
+  /* algo slides — pipeline diagram */
+  .pipe {
+    margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .pipe .node {
+    padding: 12px 22px; min-width: 360px; max-width: 600px; text-align: center;
+    border: 1.5px solid var(--ink); background: var(--paper-card);
+  }
+  .pipe .node.input { background: var(--paper); border-style: dashed; }
+  .pipe .node.output {
+    background: var(--ink); color: var(--paper);
+  }
+  .pipe .node h4 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 19px;
+    margin: 0; letter-spacing: -0.3px;
+  }
+  .pipe .node .meta {
+    position: static; padding: 0; display: block; margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .pipe .node.output .meta { color: rgba(241,235,219,0.6); }
+  .pipe .step-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--riso-red);
+  }
+  .pipe .arrow-down {
+    color: var(--ink); font-size: 22px; line-height: 1;
+  }
+
+  /* S9, S10 — algo detail two-col */
+  .algo-detail {
+    display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; margin-top: 28px;
+    align-items: start;
+  }
+  .algo-detail .left p {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 19px; line-height: 1.5; color: var(--ink-2);
+    margin: 0 0 14px;
+  }
+  .algo-detail .left p em { color: var(--riso-red); font-style: italic; }
+  .algo-detail .left p strong { color: var(--ink); font-weight: 500; }
+  .algo-detail .right {
+    background: var(--paper-card); border: 1px dashed var(--ink-mute); padding: 22px 24px;
+    position: relative;
+  }
+  .algo-detail .right .label {
+    position: absolute; top: -10px; left: 14px; background: var(--paper);
+    padding: 0 8px; font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .algo-detail pre {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.55;
+    margin: 0; white-space: pre-wrap;
+  }
+  .algo-detail .formula {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 28px;
+    margin: 12px 0; text-align: center; letter-spacing: -0.5px;
+  }
+  .algo-detail .formula .accent { color: var(--riso-red); }
+
+  /* round-robin viz (S10) */
+  .rr {
+    display: grid; grid-template-columns: repeat(5, 40px); gap: 6px; margin-top: 16px;
+    justify-content: center;
+  }
+  .rr .cell {
+    width: 40px; height: 40px; border: 1px solid var(--ink-mute);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-mute);
+  }
+  .rr .cell.taken { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .rr .cell.first { background: var(--riso-red); color: var(--paper); border-color: var(--riso-red); }
+  .rr-legend {
+    margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    color: var(--ink-mute); text-align: center; letter-spacing: 1px;
+  }
+
+  /* S13 — close */
+  .s13 { justify-content: center; align-items: center; text-align: center; }
+  .s13 .url {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: clamp(54px, 7vw, 100px); letter-spacing: -2px; line-height: 1; margin: 0;
+    color: var(--ink);
+  }
+  .s13 .url .underline { border-bottom: 4px solid var(--riso-red); padding-bottom: 4px; }
+  .s13 .stack {
+    margin-top: 36px; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-mute);
+    max-width: 660px;
+  }
+  .s13 .thanks {
+    margin-top: 40px; font-family: 'Caveat', cursive; color: var(--riso-red); font-weight: 600;
+    font-size: 36px; transform: rotate(-3deg); display: inline-block;
+  }
+
+  /* roadmap */
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 28px; }
+  .roadmap .col h4 {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ink-mute); margin: 0 0 12px;
+  }
+  .roadmap .col h4.now { color: var(--riso-red); }
+  .roadmap .col ul {
+    list-style: none; padding: 0; margin: 0;
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 16px; line-height: 1.5; color: var(--ink-2);
+  }
+  .roadmap .col li { padding: 6px 0; border-top: 1px dashed var(--ink-mute); }
+  .roadmap .col li:first-child { border-top: 0; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ============== S1 ============== -->
+  <section class="slide s1 on" data-slide="1">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 01 / 13</span>
+    </div>
+    <h1 class="h1">IndiStream<span class="dot">.</span></h1>
+    <p class="sub">A semantic, human-curated marketplace for the long tail of independent artists. Searchable in plain English. Ranked by feel.</p>
+    <span class="stamp">Pitch deck · Spring 2026</span>
+    <div class="nav-hint">press → to begin</div>
+  </section>
+
+  <!-- ============== S2 — WHAT ============== -->
+  <section class="slide s2" data-slide="2">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 02 / 13 · what this is</span>
+    </div>
+    <div class="row">
+      <div>
+        <p class="kicker">What this is</p>
+        <h2 class="h2" style="margin-top:14px;">A marketplace<br/>for the long tail.</h2>
+        <p class="body" style="margin-top:24px;">
+          IndiStream connects independent makers — <em>musicians, illustrators, filmmakers, character designers</em> — with buyers who need real licenses. Plain-English queries; results ranked by feel, not keyword density.
+        </p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v">30</div><div class="k">artists</div></div>
+        <div class="stat"><div class="v">148</div><div class="k">works</div></div>
+        <div class="stat"><div class="v">04</div><div class="k">mediums</div></div>
+        <div class="stat accent"><div class="v">live</div><div class="k">indistream.vercel.app</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S3 — MISSION ============== -->
+  <section class="slide s3" data-slide="3">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 03 / 13 · mission</span>
+    </div>
+    <p class="quote">Pull human talent<br/>out of the<br/><em>algorithm slop.</em></p>
+    <p class="quote-sub">No bidding wars, no black-box ranking, no ads. Artists keep <em>85%</em>. Buyers get real licenses, not stolen reuploads.</p>
+    <div class="margin">members &gt; metrics ✦</div>
+  </section>
+
+  <!-- ============== S4 — OBJECTIVE ============== -->
+  <section class="slide s4" data-slide="4">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 04 / 13 · objective</span>
+    </div>
+    <p class="kicker">Our objective</p>
+    <h2 class="h2" style="margin-top:14px;">Demand-constrained,<br/>not supply-constrained.</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Why this framing</h3>
+        <p>Artists already post for free across every free platform — supply will show up. The harder problem is pulling <em>buyers</em> off illegal reuploads and royalty-free dumps. So we lead with <em>buyer trust</em>: clean rights, indemnified licenses, attestation.</p>
+      </div>
+      <div class="col">
+        <h3>Who we serve first</h3>
+        <p>The legally-exposed. Audiences who <em>can't afford to pirate.</em></p>
+        <div class="seg-list">
+          <span class="seg">AI training licenses</span>
+          <span class="seg">Film &amp; studio sync</span>
+          <span class="seg">Brand &amp; advertising</span>
+          <span class="seg">Publishing &amp; print</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S5 — FUNCTIONS ============== -->
+  <section class="slide s5" data-slide="5">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 05 / 13 · key functions</span>
+    </div>
+    <p class="kicker">Six building blocks</p>
+    <h2 class="h2" style="margin-top:8px;">What the site does.</h2>
+    <div class="grid">
+      <div class="cell shipped">
+        <div class="n">01</div>
+        <h4>Plain-English search</h4>
+        <p>OpenAI embedding + pgvector. Type a brief, get ranked makers.</p>
+        <div class="tag">shipped</div>
+      </div>
+      <div class="cell shipped">
+        <div class="n">02</div>
+        <h4>Two-tier attestation</h4>
+        <p>Self-declared (○ free) or platform-verified (✓ indemnified).</p>
+        <div class="tag">shipped</div>
+      </div>
+      <div class="cell shipped">
+        <div class="n">03</div>
+        <h4>Diversity-aware ranking</h4>
+        <p>Round-robin by artist so one creator can't dominate top-K.</p>
+        <div class="tag">shipped</div>
+      </div>
+      <div class="cell shipped">
+        <div class="n">04</div>
+        <h4>Per-work license tiers</h4>
+        <p>Personal · Commercial · Buyout. Priced from each work's base.</p>
+        <div class="tag">shipped (UI)</div>
+      </div>
+      <div class="cell shipped">
+        <div class="n">05</div>
+        <h4>Artist directory + profiles</h4>
+        <p>Featured + numbered table. Bio, location, works grid.</p>
+        <div class="tag">shipped</div>
+      </div>
+      <div class="cell shipped">
+        <div class="n">06</div>
+        <h4>Sign-in</h4>
+        <p>Google OAuth via Supabase. Session in cookies, refreshed on every request.</p>
+        <div class="tag">shipped</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S6 — BUYER WORKFLOW ============== -->
+  <section class="slide" data-slide="6">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 06 / 13 · buyer workflow</span>
+    </div>
+    <p class="kicker">Workflow A — buyer</p>
+    <h2 class="h2" style="margin-top:14px;">From brief to license.</h2>
+    <p class="body" style="margin-top:18px;">A buyer arrives with a creative need expressed in their own words. The flow is composable, not click-heavy: stage filters, then commit.</p>
+    <div class="flow">
+      <div class="step"><div class="n">01</div><h5>Home</h5><p>Editorial masthead. One input. Mode toggle: artist or work.</p></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">02</div><h5>Search landing</h5><p>Plain-English prompt + try-prompts.</p></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">03</div><h5>Thinking</h5><p>4-step transition: read brief → embed → attest → curate.</p></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">04</div><h5>Results</h5><p>Refine: medium · budget · verified. Apply commits all.</p></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">05</div><h5>Detail</h5><p>License tiers or commission. Attestation badge visible.</p></div>
+    </div>
+  </section>
+
+  <!-- ============== S7 — ARTIST WORKFLOW ============== -->
+  <section class="slide" data-slide="7">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 07 / 13 · artist workflow</span>
+    </div>
+    <p class="kicker">Workflow B — artist</p>
+    <h2 class="h2" style="margin-top:14px;">From sign-in to listed.</h2>
+    <p class="body" style="margin-top:18px;">A creator joins, declares their works, and becomes searchable. Sign-in shipped this week; the rest is the next slice.</p>
+    <div class="flow">
+      <div class="step"><div class="n">01</div><h5>Sign in</h5><p>Google OAuth via Supabase.</p></div>
+      <div class="arrow">→</div>
+      <div class="step future"><div class="n">02</div><h5>Onboard</h5><p>Identity · bio · location · portfolio link.</p></div>
+      <div class="arrow">→</div>
+      <div class="step future"><div class="n">03</div><h5>List a work</h5><p>Title · description · medium · price. Server-side embed on insert.</p></div>
+      <div class="arrow">→</div>
+      <div class="step future"><div class="n">04</div><h5>Get matched</h5><p>Searchable in artist + works modes immediately.</p></div>
+    </div>
+  </section>
+
+  <!-- ============== S8 — ALGO OVERVIEW ============== -->
+  <section class="slide" data-slide="8">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 08 / 13 · algorithm · overview</span>
+    </div>
+    <p class="kicker">The core · v1 weighted ranker</p>
+    <h2 class="h2" style="margin-top:14px;">Six stages, one round-trip,<br/>ranked by <em style="color:var(--riso-red);">taste &amp; constraint</em>.</h2>
+
+    <div class="pipe">
+      <div class="node input">
+        <h4>&ldquo;moody lo-fi music for a Tokyo travel vlog&rdquo;</h4>
+        <div class="meta">user query · plain english + staged chip filters</div>
+      </div>
+      <div class="step-label">↓ embed</div>
+      <div class="node">
+        <h4>1536-d vector</h4>
+        <div class="meta">OpenAI text-embedding-3-small</div>
+      </div>
+      <div class="step-label">↓ retrieve + hydrate</div>
+      <div class="node">
+        <h4>top-50 candidates · with tier &amp; price</h4>
+        <div class="meta">pgvector HNSW · cosine · joined with artist metadata</div>
+      </div>
+      <div class="step-label">↓ hard filter</div>
+      <div class="node">
+        <h4>admissible candidates</h4>
+        <div class="meta">medium · verified-only · price ≤ 1.5× budget</div>
+      </div>
+      <div class="step-label">↓ score · α·rel + δ·health − ε·price_pen</div>
+      <div class="node">
+        <h4>weighted &amp; diversified ranking</h4>
+        <div class="meta">round-robin by artist · quota repair · confidence tags</div>
+      </div>
+      <div class="step-label">↓ render</div>
+      <div class="node output">
+        <h4>top-K results</h4>
+        <div class="meta">v1 weighted ranker · ≈ 1 s end-to-end · eval pending</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S9 — EMBEDDING + RETRIEVAL ============== -->
+  <section class="slide" data-slide="9">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 09 / 13 · algorithm · 1 of 4</span>
+    </div>
+    <p class="kicker">Algorithm step 1</p>
+    <h2 class="h2" style="margin-top:14px;">Embed and retrieve.</h2>
+    <div class="algo-detail">
+      <div class="left">
+        <p>The user's brief becomes a <strong>1536-dimensional vector</strong> via OpenAI's <span class="mono">text-embedding-3-small</span>. The same model embedded every work's <span class="mono">title + description</span> at seed time, so query and corpus live in the same space.</p>
+        <p>Retrieval runs in Postgres via <strong>pgvector</strong>. We rank candidates by <em>cosine similarity</em> against the query vector and return the top 50, then hydrate each row with its artist&rsquo;s tier and the work&rsquo;s price. The next stages (filter, score, rerank) all run in-process on this hydrated set — one DB round-trip per search.</p>
+        <p>Index = <strong>HNSW</strong>, not IVFFlat. We hit a real bug switching: with IVFFlat (<span class="mono">lists=100</span>) on a ~150-row corpus, default probe count pulled <em>zero</em> rows. HNSW has no equivalent failure on small data. The migration is one statement.</p>
+      </div>
+      <div class="right">
+        <span class="label">SQL · the RPC</span>
+<pre>create or replace function
+  public.search_works(
+    query_embedding vector(1536),
+    match_count int default 50
+  )
+returns table (
+  work_id uuid, artist_id uuid,
+  title text, medium medium_kind,
+  similarity float
+)
+language sql stable
+as $$
+  select
+    w.id, w.artist_id, w.title, w.medium,
+    1 - (w.embedding &lt;=&gt; query_embedding)
+      as similarity
+  from public.works w
+  where w.embedding is not null
+  order by w.embedding &lt;=&gt; query_embedding
+  limit match_count;
+$$;</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S10 — HARD FILTERS + SCORE ============== -->
+  <section class="slide" data-slide="10">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 10 / 13 · algorithm · 2 of 4</span>
+    </div>
+    <p class="kicker">Algorithm step 2</p>
+    <h2 class="h2" style="margin-top:14px;">Score, don&rsquo;t just rank.</h2>
+    <div class="algo-detail">
+      <div class="left">
+        <p><strong>Hard filters first.</strong> Medium mismatch, missing verification, or price beyond <em>1.5× the buyer&rsquo;s stated budget</em> drops a candidate before scoring. Cheap, predictable, lets the buyer trust the chips they ticked.</p>
+        <p>Among survivors, every work gets a <strong>weighted score</strong>:</p>
+        <div class="formula">
+          <span class="accent">score</span> = α·rel + δ·health − ε·price_pen
+        </div>
+        <p style="font-size:16px; margin-top:18px;">
+          <em>α (1.0)</em> — pure cosine relevance.<br/>
+          <em>δ (0.5)</em> — tier health bonus (emerging 1.0 / growing 0.5 / established 0.0). Gated by rel ≥ 0.20 so we don&rsquo;t surface low-relevance &ldquo;emerging&rdquo; results just for the bonus.<br/>
+          <em>ε (0.6)</em> — squared price penalty: 0 under budget, ramps to 1 at 1.5×, where the hard filter already rejected it.<br/>
+          <em>β = γ = 0</em> in v1 — revenue and embedding-MMR diversity are weights reserved for v2.
+        </p>
+      </div>
+      <div class="right">
+        <span class="label">Weights · v1</span>
+<pre>α  alpha_relevance   = 1.0
+β  beta_revenue     = 0.0   ← v2
+γ  gamma_diversity  = 0.0   ← v2
+δ  delta_health     = 0.5
+ε  epsilon_price    = 0.6
+
+PRICE_CEILING_MULT  = 1.5×
+MIN_RELEVANCE_FLOOR = 0.20
+QUOTA_FLOOR_REL     = 0.40
+
+TIER_BONUS = {
+  emerging:    1.0,
+  growing:     0.5,
+  established: 0.0,
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S11 — DIVERSITY + QUOTA REPAIR ============== -->
+  <section class="slide" data-slide="11">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 11 / 13 · algorithm · 3 of 4</span>
+    </div>
+    <p class="kicker">Algorithm step 3</p>
+    <h2 class="h2" style="margin-top:14px;">Spread, then guarantee.</h2>
+    <div class="algo-detail">
+      <div class="left">
+        <p><strong>Round-robin by artist</strong> (kept from v0). Pull one work per artist until each bucket drains, preserving each bucket&rsquo;s score order. Stops one creator from monopolising the top-K when their style genuinely matches the brief.</p>
+        <p><strong>Quota repair pass.</strong> After round-robin, count how many top-K rows belong to <em>emerging</em> artists with <span class="mono">rel ≥ 0.40</span>. If fewer than <span class="mono">⌈K × 0.2⌉</span>, swap qualifying emerging candidates in. Repaired rows ship with <span class="mono">quota_repaired: true</span> so the UI can mark them.</p>
+        <p>Why the second pass? Round-robin alone biases toward established artists — they have more works in the candidate pool, so they win more buckets. Quota repair forces long-tail visibility <em>without</em> letting low-relevance results sneak through (the 0.40 floor is hard).</p>
+        <p>Sister logic in artist-mode: <span class="mono">artist_score = mean(top-3 work similarities)</span>. Same scoring/filtering policy applied per-artist; no separate bio embeddings yet — that&rsquo;s the obvious next addition once onboarding lets artists sign up before listing.</p>
+      </div>
+      <div class="right">
+        <span class="label">Round-robin · top-10 example</span>
+        <div class="rr">
+          <div class="cell first">A₁</div>
+          <div class="cell first">B₁</div>
+          <div class="cell first">C₁</div>
+          <div class="cell taken">A₂</div>
+          <div class="cell taken">B₂</div>
+          <div class="cell taken">C₂</div>
+          <div class="cell taken">A₃</div>
+          <div class="cell">—</div>
+          <div class="cell taken">C₃</div>
+          <div class="cell taken">C₄</div>
+        </div>
+        <div class="rr-legend">one per artist · then drain</div>
+
+        <div style="margin-top:24px; padding-top:16px; border-top:1px dashed var(--ink-mute); font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.65; color:var(--ink-2);">
+          <div style="color:var(--riso-red); margin-bottom:6px;">quota repair · K=10</div>
+          <div>floor   = ⌈10 × 0.2⌉ = 2</div>
+          <div>found   = 1 emerging row in top-10</div>
+          <div>action  = swap in next emerging w/ rel ≥ 0.40</div>
+          <div>flag    = quota_repaired: true</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S12 — CONFIDENCE + DEFERRED APPLY ============== -->
+  <section class="slide" data-slide="12">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 12 / 13 · algorithm · 4 of 4</span>
+    </div>
+    <p class="kicker">Algorithm step 4 — signaling &amp; UX</p>
+    <h2 class="h2" style="margin-top:14px;">Honest results, deferred filters.</h2>
+    <div class="algo-detail">
+      <div class="left">
+        <p><strong>Confidence tags.</strong> Every returned row is bucketed by its raw relevance: <span class="mono">HIGH ≥ 0.55</span>, <span class="mono">MEDIUM ≥ 0.40</span>, <span class="mono">LOW ≥ 0.25</span>, else <span class="mono">NO_MATCH</span>. The UI uses this to dim, badge, or refuse to show — so a brief with no real match stays honest instead of forcing a top-10.</p>
+        <p><strong>Deferred apply.</strong> Prompt edits, mode toggle, budget chips, and verified all <em>stage</em>; nothing fetches until <strong>Apply</strong>. Apply commits the whole batch in one round-trip and fires the thinking transition.</p>
+        <p><strong>Two channels for refinement.</strong> Structured chips (medium, budget, verified) become hard filter parameters — exact, predictable. Free-form feel words (&ldquo;warmer&rdquo;, &ldquo;more tape&rdquo;) get appended to the query text and embedded — soft, semantic. Buyers rarely realise both layers exist; they just feel composable.</p>
+      </div>
+      <div class="right">
+        <span class="label">staged → applied</span>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.85; color:var(--ink-2);">
+          <div><span style="color:var(--ink-mute);">prompt:</span>    &ldquo;moody lo-fi …&rdquo;</div>
+          <div><span style="color:var(--ink-mute);">mode:</span>      works</div>
+          <div><span style="color:var(--ink-mute);">budget:</span>    [under $200]</div>
+          <div><span style="color:var(--ink-mute);">verified:</span>  ✓</div>
+          <div><span style="color:var(--ink-mute);">+ feel:</span>    [warmer, more tape]</div>
+          <div style="height:8px;"></div>
+          <div style="color:var(--riso-red);">Apply →</div>
+          <div style="height:8px;"></div>
+          <div><span style="color:var(--ink-mute);">embed text:</span></div>
+          <div style="color:var(--ink); padding-left:12px; font-style:italic; font-family:'Fraunces',serif; font-size:14px;">
+            &ldquo;moody lo-fi …. warmer, more tape&rdquo;
+          </div>
+          <div><span style="color:var(--ink-mute);">filters:</span></div>
+          <div style="color:var(--ink); padding-left:12px;">
+            { medium, verified_only,<br/>&nbsp;&nbsp;budget_cents: 20000 }
+          </div>
+        </div>
+
+        <div style="margin-top:22px; padding-top:14px; border-top:1px dashed var(--ink-mute);">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-mute); margin-bottom:8px;">confidence buckets · rel</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.85;">
+            <span style="color:var(--riso-red);">HIGH</span>     · ≥ 0.55<br/>
+            <span class="mono">MEDIUM</span>   · ≥ 0.40<br/>
+            <span class="mono">LOW</span>      · ≥ 0.25<br/>
+            <span style="color:var(--ink-mute);">NO_MATCH</span> · &lt; 0.25
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== S13 — CLOSE ============== -->
+  <section class="slide s13" data-slide="13">
+    <div class="meta">
+      <span class="brand">IndiStream<span class="dot">.</span></span>
+      <span class="num">№ 13 / 13</span>
+    </div>
+    <p class="kicker" style="margin-bottom:18px;">Live · iterating · open to feedback</p>
+    <p class="url"><span class="underline">indistream.vercel.app</span></p>
+    <p class="stack">
+      Next.js 16 · Supabase (Postgres + pgvector + auth) · OpenAI text-embedding-3-small · Vercel · all open source where possible.
+    </p>
+    <div class="roadmap">
+      <div class="col">
+        <h4 class="now">now</h4>
+        <ul>
+          <li>Search MVP, all 6 screens, OAuth sign-in, deployed.</li>
+          <li>Diversity rerank live, deferred-apply UX, two-tier attestation.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>next</h4>
+        <ul>
+          <li>Artist onboarding (slice 2b)</li>
+          <li>Eval harness (algo worktree)</li>
+          <li>Real bio embeddings</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>later</h4>
+        <ul>
+          <li>Hybrid lexical + semantic</li>
+          <li>MMR diversity</li>
+          <li>Cross-encoder reranker</li>
+          <li>Stripe license purchase</li>
+        </ul>
+      </div>
+    </div>
+    <div class="thanks">thanks ✦</div>
+  </section>
+
+</div>
+
+<div class="progress" id="progress"></div>
+
+<script>
+(() => {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const progressEl = document.getElementById('progress');
+  let i = 0;
+
+  // build progress bar
+  for (let n = 0; n < slides.length; n++) {
+    const span = document.createElement('span');
+    progressEl.appendChild(span);
+  }
+  const ticks = Array.from(progressEl.children);
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('on', idx === i));
+    ticks.forEach((t, idx) => {
+      t.classList.toggle('done', idx < i);
+      t.classList.toggle('cur',  idx === i);
+    });
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', ' ', 'PageDown', 'l'].includes(e.key)) { e.preventDefault(); go(i + 1); }
+    else if (['ArrowLeft', 'PageUp', 'h'].includes(e.key))    { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home')                                 { go(0); }
+    else if (e.key === 'End')                                  { go(slides.length - 1); }
+  });
+
+  document.addEventListener('click', e => {
+    // click anywhere except a link → next; shift-click → back
+    if (e.target.closest('a')) return;
+    if (e.shiftKey) go(i - 1); else go(i + 1);
+  });
+
+  // deep-link via hash (#3 → slide 3)
+  const hash = parseInt(location.hash.slice(1), 10);
+  if (hash >= 1 && hash <= slides.length) go(hash - 1);
+  else go(0);
+})();
+</script>
+
+</body>
+</html>
