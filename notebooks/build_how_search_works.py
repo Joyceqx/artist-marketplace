@@ -39,8 +39,8 @@ def p_with_runs(parts):
 doc.add_heading("How the Search Algorithm Works", level=0)
 sub = doc.add_paragraph()
 r = sub.add_run(
-    "Companion to algorithm_design.ipynb · Living document — last updated "
-    "2026-04-25 · OIT 277 Artist Marketplace project"
+    "Companion to algorithm_v1_production.ipynb · Living document — last "
+    "updated 2026-04-25 · OIT 277 Artist Marketplace project"
 )
 r.italic = True
 
@@ -764,12 +764,15 @@ for i, (a, b, c) in enumerate(cl_rows, start=1):
 # ─── Closer ────────────────────────────────────────────────────────────────
 doc.add_heading("A note on this document", level=1)
 doc.add_paragraph(
-    "This is a living document. Every time the algorithm in "
-    "algorithm_design.ipynb or web/lib/search.ts changes, the relevant "
-    "section here will be updated and a new row will be added to the "
-    "change log. If you ever find a discrepancy between what the code does "
-    "and what this document says, that is a bug — flag it and we will "
-    "fix it."
+    "This is a living document. It tracks the production v1 algorithm "
+    "mirrored in algorithm_v1_production.ipynb and shipped in "
+    "web/lib/search.ts. Every time the production code changes, the "
+    "relevant section here will be updated and a new row will be added "
+    "to the change log. (For the wider design space — v2 candidates, "
+    "MMR diversity, exploration, audit logging — see "
+    "algorithm_design.ipynb.) If you ever find a discrepancy between "
+    "what the code does and what this document says, that is a bug "
+    "— flag it and we will fix it."
 )
 doc.add_paragraph(
     "No part of this document requires technical background to read. If "
