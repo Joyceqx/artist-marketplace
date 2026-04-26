@@ -18,6 +18,11 @@ type WorkResult = {
   title: string;
   medium: string;
   score: number;
+  // New fields from the v1 weighted ranker — optional so the UI is back-compat:
+  rel?: number;                           // pure relevance for "% match" display
+  tier?: string;                          // 'emerging' | 'growing' | 'established'
+  confidence?: "HIGH" | "MEDIUM" | "LOW" | "NO_MATCH";
+  quota_repaired?: boolean;
 };
 
 type Artist = {
@@ -49,6 +54,22 @@ const MEDIA: { label: string; value: Medium }[] = [
 ];
 
 const BUDGET_CHIPS = ["under $200", "$200–500", "$500+"];
+
+// Map a budget chip to a structured `budget_cents` filter sent to the API.
+// Anything else (feel chips like "warmer") stays in the embedded query text.
+function parseBudgetFromApplied(applied: Set<string>): number | undefined {
+  if (applied.has("under $200")) return 20000;
+  if (applied.has("$200–500")) return 50000;
+  // "$500+" has no upper bound — leave undefined
+  return undefined;
+}
+
+const BUDGET_CHIP_SET = new Set(BUDGET_CHIPS);
+function feelTextFromApplied(applied: Set<string>): string {
+  return Array.from(applied)
+    .filter((c) => !BUDGET_CHIP_SET.has(c))
+    .join(", ");
+}
 
 const ART_CYCLE = ["a2", "a3", "a4", "a5", "a6"];
 
@@ -105,10 +126,12 @@ function SearchResults({
   const [error, setError] = useState<string | null>(null);
 
   // Loading is derived: when fetched-key doesn't match current-key, show thinking.
+  // Medium and verifiedApplied are included because the API now applies them
+  // server-side as hard filters — changing either re-fires the search.
   const currentFetchKey = useMemo(
     () =>
-      `${appliedMode}::${appliedQuery.trim()}::${Array.from(applied).sort().join(",")}`,
-    [appliedMode, appliedQuery, applied],
+      `${appliedMode}::${appliedQuery.trim()}::${Array.from(applied).sort().join(",")}::${medium}::${verifiedApplied}`,
+    [appliedMode, appliedQuery, applied, medium, verifiedApplied],
   );
   const [lastFetchedKey, setLastFetchedKey] = useState<string | null>(null);
   const isLoading = currentFetchKey !== lastFetchedKey;
@@ -133,9 +156,17 @@ function SearchResults({
   useEffect(() => {
     const q = appliedQuery.trim();
     if (!q) return;
-    const augmented = applied.size
-      ? `${q}. ${Array.from(applied).join(", ")}`
-      : q;
+    // Split chips: feel-words go into the embedded query text (soft);
+    // budget chips become a structured `budget_cents` filter (soft penalty
+    // within band, hard reject beyond 1.5x).
+    const feel = feelTextFromApplied(applied);
+    const augmented = feel ? `${q}. ${feel}` : q;
+    const filters: Record<string, unknown> = {};
+    if (medium !== "any") filters.medium = medium;
+    if (verifiedApplied) filters.verified_only = true;
+    const budgetCents = parseBudgetFromApplied(applied);
+    if (budgetCents !== undefined) filters.budget_cents = budgetCents;
+
     let cancelled = false;
     const startedAt = Date.now();
     const endpoint = appliedMode === "artist" ? "/search/artists" : "/search";
@@ -143,7 +174,7 @@ function SearchResults({
     fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: augmented, limit: 20 }),
+      body: JSON.stringify({ query: augmented, limit: 20, filters }),
     })
       .then(async (res) => {
         if (!res.ok) throw new Error(`search failed: ${res.status}`);
@@ -168,7 +199,7 @@ function SearchResults({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appliedMode, appliedQuery, applied]);
+  }, [appliedMode, appliedQuery, applied, medium, verifiedApplied]);
 
   const artistById = useMemo(() => {
     const m = new Map<string, Artist>();
@@ -383,7 +414,7 @@ function SearchResults({
                 </div>
                 <div className="foot">
                   <span className="match">
-                    · {(a.score * 100).toFixed(0)}% match · via &ldquo;
+                    · {Math.min(99, Math.round(a.score * 100))}% match · via &ldquo;
                     {a.top_work_title}&rdquo;
                   </span>
                   <span className="reach">
@@ -433,7 +464,7 @@ function SearchResults({
                   </div>
                   <div className="work-row-meta">
                     <div className="work-row-match">
-                      {(w.score * 100).toFixed(0)}% match
+                      {Math.min(99, Math.round((w.rel ?? w.score) * 100))}% match
                     </div>
                   </div>
                   <div className="work-row-price">
