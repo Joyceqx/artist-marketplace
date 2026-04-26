@@ -2730,3 +2730,633 @@ nav.site .issue {
   filter: grayscale(0.4);
   user-select: none;
 }
+
+/* =========== MOBILE (≤768px) ===========
+ * Additive only. Desktop rules above are untouched.
+ * Each block mirrors the section order of the desktop CSS.
+ */
+@media (max-width: 768px) {
+  /* --- Nav --- */
+  nav.site {
+    padding: 12px 16px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  nav.site .brand {
+    font-size: 18px;
+  }
+  nav.site .links {
+    gap: 14px;
+  }
+  /* Hide the decorative "Manifesto" span (only non-link element in .links) */
+  nav.site .links > span {
+    display: none;
+  }
+  nav.site .issue {
+    font-size: 9px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* --- Home --- */
+  .home {
+    padding: 0 20px 20px;
+  }
+  .home-issue-line {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+  /* Drop the middle "A marketplace for independent artists" span on mobile */
+  .home-issue-line span:nth-child(2) {
+    display: none;
+  }
+
+  .home-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 18px 0 22px;
+  }
+  .home-hero-img {
+    aspect-ratio: 4 / 3;
+    max-height: 280px;
+  }
+  .home-hero h1 {
+    letter-spacing: -1.5px;
+  }
+  .home-hero-meta {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 12px;
+    padding-top: 14px;
+    margin-top: 14px;
+  }
+  .home-hero-meta .lede {
+    grid-column: 1 / -1;
+    font-size: 14px;
+    max-width: none;
+  }
+  .home-hero-meta .stat .v {
+    font-size: 26px;
+  }
+
+  .home-search-hint {
+    display: none;
+  }
+  .home-search-field {
+    gap: 10px;
+    padding: 12px 0;
+  }
+  .home-search-field .label {
+    display: none;
+  }
+  .home-search-field input {
+    font-size: 18px;
+  }
+  .home-search-field .enter {
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+  .home-mode-row {
+    gap: 18px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 12px;
+  }
+  .home-try {
+    margin-top: 22px;
+    gap: 8px;
+  }
+  .home-try .try-chip {
+    font-size: 14px;
+  }
+
+  .home-strip {
+    margin: 22px 0;
+    padding-top: 18px;
+  }
+  .home-strip .strip-head {
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .home-strip .strip-head h2 {
+    font-size: 26px;
+  }
+  .home-strip .strip-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  /* Reset the desktop staggered offsets so cards align flush on mobile */
+  .home-strip .feat:nth-child(2) .img-wrap,
+  .home-strip .feat:nth-child(3) .img-wrap {
+    margin-top: 0;
+  }
+  .home-strip .feat h3 {
+    font-size: 22px;
+  }
+
+  .home-manifesto {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 28px 0;
+    padding: 22px 0;
+  }
+  .home-manifesto p {
+    font-size: 17px;
+  }
+
+  .home-buyers {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin: 22px 0 26px;
+    padding: 22px 0;
+  }
+  .home-buyers h2 {
+    font-size: 28px;
+  }
+  .home-buyers .hb-lede {
+    font-size: 14px;
+    max-width: none;
+  }
+  .home-buyers .hb-stat .v {
+    font-size: 30px;
+  }
+  .home-buyers .hb-stat .v .u {
+    font-size: 16px;
+  }
+
+  .home-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 20px 0 24px;
+    font-size: 9px;
+  }
+
+  /* --- Search (sidebar + results stack) --- */
+  .search {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .search .brief-col {
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+    padding: 22px 20px;
+  }
+  .search .brief-col h3 {
+    font-size: 26px;
+    margin: 0 0 18px;
+  }
+  .edit-hint {
+    font-size: 13px;
+    margin: -14px 0 18px 0;
+  }
+  .results-col {
+    padding: 22px 20px 40px;
+    overflow-y: visible;
+  }
+  .results-head {
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .results-head .count {
+    font-size: 17px;
+  }
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .artist-card h3 {
+    font-size: 24px;
+  }
+
+  /* Work row — restructure 5-col table into compact 3-col card */
+  .work-row {
+    grid-template-columns: 70px 1fr;
+    grid-template-rows: auto auto;
+    gap: 6px 14px;
+    padding: 14px 0;
+  }
+  .work-row-no {
+    display: none;
+  }
+  .work-row-art {
+    width: 70px;
+    height: 70px;
+    grid-row: 1 / span 2;
+  }
+  .work-row-info {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .work-row-title {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  .work-row-meta {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+  }
+  .work-row-price {
+    display: none;
+  }
+
+  /* --- Search Landing (empty state) --- */
+  .search-landing {
+    padding: 40px 20px 40px;
+  }
+  .sl-title {
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+  }
+  .sl-lede {
+    font-size: 15px;
+    margin-bottom: 26px;
+  }
+  .sl-field {
+    gap: 10px;
+    padding: 14px 0;
+  }
+  .sl-field .label {
+    display: none;
+  }
+  .sl-field input {
+    font-size: 20px;
+  }
+  .sl-field .enter {
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+  .sl-mode-row {
+    gap: 18px;
+    margin-bottom: 28px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .sl-examples {
+    padding-top: 24px;
+  }
+  .sl-ex {
+    font-size: 17px;
+    padding-bottom: 12px;
+  }
+  .sl-tips {
+    margin-top: 32px;
+    padding: 18px 18px;
+    font-size: 14px;
+  }
+
+  /* --- Search Thinking --- */
+  .search-thinking {
+    min-height: calc(100vh - 60px);
+  }
+  .st-wrap {
+    padding: 40px 20px;
+  }
+  .st-query {
+    margin: 0 0 28px;
+    padding-bottom: 20px;
+  }
+  .st-step {
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+  }
+  .st-meta {
+    display: none;
+  }
+  .st-lbl {
+    font-size: 17px;
+  }
+  .st-hand {
+    display: none;
+  }
+
+  /* --- Artists Directory --- */
+  .artists-dir {
+    padding: 24px 20px 60px;
+  }
+  .artists-head {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 16px 0 22px;
+  }
+  .artists-title {
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+  }
+  .artists-lede {
+    font-size: 15px;
+    max-width: none;
+  }
+  .artists-stats {
+    gap: 24px;
+    padding-bottom: 0;
+  }
+  .artists-stats > div {
+    text-align: left;
+  }
+  .artists-stats .v {
+    font-size: 28px;
+  }
+
+  .artists-filter-bar {
+    gap: 16px;
+    padding: 14px 0;
+    margin-bottom: 28px;
+  }
+
+  .artists-featured {
+    margin-bottom: 40px;
+  }
+  .af-head {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .af-head h2 {
+    font-size: 26px;
+  }
+  .af-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .af-card h3 {
+    font-size: 24px;
+  }
+
+  .artists-list {
+    margin-bottom: 32px;
+  }
+  .al-head {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* Hide the desktop column-header row — layout below is no longer a table */
+  .al-row-head {
+    display: none;
+  }
+  /* Flatten 6-col table to a stacked card */
+  .al-row {
+    grid-template-columns: 1fr auto;
+    gap: 4px 14px;
+    padding: 14px 0;
+  }
+  .al-n {
+    display: none;
+  }
+  .al-name {
+    grid-column: 1;
+    font-size: 18px;
+  }
+  .al-price {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: baseline;
+    font-size: 16px;
+  }
+  .al-meta {
+    grid-column: 1 / -1;
+  }
+  .al-sig {
+    grid-column: 1 / -1;
+    font-size: 13px;
+  }
+  .al-works {
+    grid-column: 1 / -1;
+    text-align: left;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .al-works::before {
+    content: "Works · ";
+  }
+
+  .artists-footer-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 36px;
+    padding: 22px 0;
+  }
+  .artists-footer-cta a {
+    font-size: 18px;
+  }
+
+  /* --- Artist Profile --- */
+  .artist-page {
+    padding: 24px 20px 60px;
+  }
+  .artist-page .breadcrumb {
+    margin-bottom: 22px;
+  }
+  .artist-head {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+  .artist-head .info h1 {
+    font-size: 48px;
+    letter-spacing: -1.5px;
+    margin: 0 0 14px;
+  }
+  .artist-head .info .bio {
+    font-size: 17px;
+    margin-bottom: 22px;
+  }
+  .artist-head .info .facts {
+    gap: 14px 18px;
+    margin-bottom: 22px;
+  }
+  .artist-head .info .facts .cell .v {
+    font-size: 14px;
+  }
+  .artist-head .info .cta-row {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .artist-works {
+    padding: 28px 0;
+  }
+  .artist-works .sec-head {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .artist-works .sec-head h2 {
+    font-size: 28px;
+  }
+  .artist-works .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .artist-works .work-item h4 {
+    font-size: 16px;
+  }
+  .artist-works .work-item .meta {
+    font-size: 9px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .commission {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 28px 0;
+  }
+  .commission .left h2 {
+    font-size: 30px;
+  }
+  .commission .left p {
+    font-size: 15px;
+  }
+  .commission .form {
+    padding: 18px;
+  }
+  /* iOS Safari zooms inputs with font-size <16px on focus */
+  .commission .form input,
+  .commission .form textarea {
+    font-size: 16px;
+  }
+
+  /* --- Work Detail --- */
+  .work {
+    padding: 24px 20px 60px;
+  }
+  .work .breadcrumb {
+    margin-bottom: 22px;
+  }
+  .work-top {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .work-info h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+  .work-info .by {
+    font-size: 17px;
+    margin-bottom: 18px;
+  }
+  .work-info .desc {
+    font-size: 16px;
+    margin-bottom: 22px;
+  }
+  .work-meta {
+    gap: 14px 22px;
+    margin-bottom: 22px;
+  }
+  .work-meta .cell .v {
+    font-size: 14px;
+  }
+
+  .license-panel {
+    padding: 18px;
+  }
+  .license-row .lr-title {
+    font-size: 16px;
+  }
+  .license-row .lr-desc {
+    max-width: none;
+  }
+  .license-row .lr-price {
+    font-size: 18px;
+  }
+  .license-ctas {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .work-also {
+    margin-top: 40px;
+    padding-top: 24px;
+  }
+  .work-also h2 {
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+  .work-also .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .work-also .card h4 {
+    font-size: 15px;
+  }
+  .work-also .card .meta {
+    font-size: 9px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* --- Join --- */
+  .join {
+    min-height: auto;
+  }
+  .join-wrap {
+    grid-template-columns: 1fr;
+  }
+  .join-left {
+    padding: 36px 20px 28px;
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+  .join-title {
+    letter-spacing: -1.5px;
+    margin: 0 0 18px;
+  }
+  .join-lede {
+    font-size: 16px;
+    max-width: none;
+    margin: 0 0 24px;
+  }
+  .join-bullets {
+    max-width: none;
+    gap: 12px;
+  }
+  .join-bullets li {
+    font-size: 15px;
+    padding-bottom: 12px;
+  }
+  /* Move the absolutely-positioned scribble inline so it doesn't clip */
+  .join-margin {
+    position: static;
+    margin-top: 18px;
+    font-size: 20px;
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+
+  .join-right {
+    padding: 32px 20px 40px;
+  }
+  .join-tab {
+    font-size: 18px;
+    padding: 6px 14px 10px 0;
+    margin-right: 14px;
+  }
+  .jf-oauth-btn {
+    font-size: 15px;
+    padding: 11px 14px;
+  }
+  .jf-submit {
+    font-size: 18px;
+  }
+
+  /* --- Stub (Me) --- */
+  .stub {
+    padding: 50px 20px;
+  }
+  .stub h1 {
+    font-size: 36px;
+  }
+  .stub p {
+    font-size: 16px;
+    margin: 0 0 22px;
+  }
+}
