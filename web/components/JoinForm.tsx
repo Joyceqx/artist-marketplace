@@ -1,11 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type Tab = "signin" | "signup";
 
 export function JoinForm() {
   const [tab, setTab] = useState<Tab>("signin");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function signInWithGoogle() {
+    setBusy(true);
+    setError(null);
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/`,
+      },
+    });
+    if (error) {
+      setError(error.message);
+      setBusy(false);
+    }
+    // On success the browser navigates to Google; no further client work.
+  }
 
   return (
     <>
@@ -32,50 +52,63 @@ export function JoinForm() {
           onSubmit={(e) => e.preventDefault()}
           aria-label="Sign in"
         >
-          <div className="jf-field">
-            <label htmlFor="signin-email">Email</label>
-            <input
-              id="signin-email"
-              type="email"
-              placeholder="you@studio.com"
-              autoComplete="email"
-            />
-          </div>
-          <div className="jf-field">
-            <label htmlFor="signin-password">Password</label>
-            <input
-              id="signin-password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
-          </div>
-          <div className="jf-row">
-            <label className="jf-check">
-              <input type="checkbox" defaultChecked /> Stay signed in
-            </label>
-            <button type="button" className="jf-link">
-              Forgot password
-            </button>
-          </div>
-          <button type="button" className="jf-submit">
-            <span className="lbl">Sign in</span>
-            <span className="arrow">→</span>
-          </button>
-          <div className="jf-divider">
-            <span>or</span>
-          </div>
+          <p
+            style={{
+              fontFamily: "Fraunces, serif",
+              fontStyle: "italic",
+              fontSize: 16,
+              lineHeight: 1.5,
+              color: "var(--ink-2)",
+              margin: "0 0 8px",
+            }}
+          >
+            One tap. We don&rsquo;t store passwords here.
+          </p>
+
           <div className="jf-oauth">
-            <button type="button" className="jf-oauth-btn">
-              <span className="g">G</span> Continue with Google
+            <button
+              type="button"
+              className="jf-oauth-btn"
+              onClick={signInWithGoogle}
+              disabled={busy}
+            >
+              <span className="g">G</span>{" "}
+              {busy ? "Redirecting…" : "Continue with Google"}
             </button>
-            <button type="button" className="jf-oauth-btn">
+            <button type="button" className="jf-oauth-btn" disabled>
               <span className="g" style={{ fontFamily: "serif" }}>
                 a
               </span>{" "}
               Continue with Apple
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontFamily: "IBM Plex Mono, monospace",
+                  fontStyle: "normal",
+                  fontSize: 9,
+                  letterSpacing: "1.5px",
+                  color: "var(--ink-mute)",
+                }}
+              >
+                soon
+              </span>
             </button>
           </div>
+
+          {error && (
+            <div
+              style={{
+                fontFamily: "IBM Plex Mono, monospace",
+                fontSize: 11,
+                color: "var(--riso-red)",
+                padding: "8px 12px",
+                border: "1px solid var(--riso-red)",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
           <div className="jf-foot">
             New here?{" "}
             <button
@@ -114,15 +147,6 @@ export function JoinForm() {
                 id="signup-email"
                 type="email"
                 placeholder="you@studio.com"
-                disabled
-              />
-            </div>
-            <div className="jf-field">
-              <label htmlFor="signup-password">Password</label>
-              <input
-                id="signup-password"
-                type="password"
-                placeholder="at least 8 characters"
                 disabled
               />
             </div>

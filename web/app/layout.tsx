@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteNav } from "@/components/SiteNav";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "IndiStream — a marketplace for independent artists",
@@ -8,11 +9,16 @@ export const metadata: Metadata = {
     "Semantic, human-curated marketplace for independent musicians, illustrators, filmmakers, and makers — searchable in plain english.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const userEmail = user?.email ?? null;
   return (
     <html lang="en">
       <head>
@@ -28,7 +34,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <SiteNav />
+        <SiteNav userEmail={userEmail} />
         {children}
       </body>
     </html>

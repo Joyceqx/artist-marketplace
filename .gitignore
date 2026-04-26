@@ -30,6 +30,9 @@ env/
 !.env.example
 !.env.local.example
 
+# OAuth client downloads from Google Cloud Console (contain client_secret)
+client_secret*.json
+
 # Editors / OS
 .DS_Store
 .idea/
