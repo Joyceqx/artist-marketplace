@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IndiStream — three-minute pitch · spring 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --paper:       #f1ebdb;
+    --paper-card:  #faf5e6;
+    --ink:         #1d1a14;
+    --ink-2:       #3a362b;
+    --ink-mute:    rgba(29, 26, 20, 0.55);
+    --ink-faint:   rgba(29, 26, 20, 0.18);
+    --accent:      #c8412a;   /* vermilion */
+    --accent-soft: rgba(200, 65, 42, 0.12);
+    --olive:       #6f7a3a;
+    --gold:        #c89427;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--paper); color: var(--ink);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px; overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* paper grain — subtle, not noisy */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9999;
+    background:
+      radial-gradient(ellipse at 25% 15%, transparent 50%, rgba(0,0,0,0.04) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.08  0 0 0 0 0.04  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+
+  /* type helpers */
+  .serif  { font-family: "Fraunces", serif; font-variation-settings: "opsz" 144; }
+  .italic { font-family: "Fraunces", serif; font-style: italic; font-variation-settings: "opsz" 144; }
+  .mono   { font-family: "IBM Plex Mono", monospace; }
+
+  /* ─── deck shell ───────────────────────────────────────────── */
+  .deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 76px 88px 96px;
+    opacity: 0; visibility: hidden;
+    transition: opacity 420ms ease;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; visibility: visible; }
+  .slide.active .reveal {
+    animation: reveal 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .slide.active .reveal:nth-child(2) { animation-delay: 80ms; }
+  .slide.active .reveal:nth-child(3) { animation-delay: 160ms; }
+  .slide.active .reveal:nth-child(4) { animation-delay: 240ms; }
+  .slide.active .reveal:nth-child(5) { animation-delay: 320ms; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  /* masthead — thin editorial rule */
+  .masthead {
+    position: absolute; top: 22px; left: 88px; right: 88px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 12px;
+    font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--ink-mute); z-index: 5;
+  }
+  .masthead .brand {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-variation-settings: "opsz" 144;
+    font-weight: 400; font-size: 22px; letter-spacing: -0.4px;
+    text-transform: none; color: var(--ink);
+  }
+  .masthead .brand .dot { color: var(--accent); }
+  .masthead .right { display: flex; gap: 28px; align-items: baseline; }
+
+  /* footer controls */
+  .controls {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 88px; display: flex; align-items: center; gap: 24px;
+    background: linear-gradient(to top, var(--paper) 70%, transparent);
+    pointer-events: none;
+  }
+  .controls > * { pointer-events: auto; }
+  .nav-btn {
+    background: transparent; border: 1px solid var(--ink); color: var(--ink);
+    font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    letter-spacing: 1.6px; text-transform: uppercase;
+    padding: 7px 16px; cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .nav-btn:hover { background: var(--ink); color: var(--paper); }
+  .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+  .progress { flex: 1; height: 1px; background: var(--ink-faint); position: relative; }
+  .progress .fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--accent); transition: width 420ms ease;
+  }
+  .counter {
+    font-size: 10px; letter-spacing: 2.2px; color: var(--ink-mute);
+    min-width: 80px; text-align: right;
+  }
+
+  /* shared atoms */
+  .eyebrow {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px; font-weight: 500;
+  }
+  .eyebrow .num {
+    color: var(--ink); margin-right: 10px;
+    border: 1px solid var(--ink); padding: 2px 7px;
+  }
+  .display {
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; line-height: 1.02; letter-spacing: -1.4px;
+    margin: 0;
+  }
+  .display em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .lede {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(20px, 1.9vw, 26px); line-height: 1.36;
+    color: var(--ink-2); max-width: 720px; margin: 0;
+  }
+
+  /* ============================================================
+     SLIDE 1 — cover
+     ============================================================ */
+  .s-cover {
+    display: grid; grid-template-rows: auto 1fr auto; height: 100%;
+    padding-top: 86px;
+  }
+  .cover-mark {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .cover-mark span { color: var(--accent); }
+  .cover-title {
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; line-height: 0.98; letter-spacing: -2px;
+    font-size: clamp(56px, 7.8vw, 124px);
+    margin: 0; align-self: center; max-width: 14ch;
+  }
+  .cover-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .cover-foot {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--ink); padding-top: 16px; gap: 32px;
+  }
+  .cover-foot .tag {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(18px, 1.8vw, 24px); color: var(--ink-2);
+    max-width: 28ch;
+  }
+  .cover-foot .team {
+    font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--ink-mute); text-align: right; line-height: 1.8;
+  }
+  .cover-foot .team strong { color: var(--ink); font-weight: 500; }
+
+  /* ============================================================
+     SLIDE 2 — the problem (diptych)
+     ============================================================ */
+  .s-problem {
+    padding-top: 96px;
+    display: grid; grid-template-rows: auto 1fr; gap: 36px;
+  }
+  .diptych {
+    display: grid; grid-template-columns: 1fr 1px 1fr; gap: 56px;
+    align-items: stretch;
+  }
+  .diptych .rule {
+    background: var(--ink-faint);
+  }
+  .pain {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 18px; padding: 12px 0;
+  }
+  .pain .label {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+  }
+  .pain h2 {
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; font-size: clamp(40px, 4.6vw, 68px);
+    line-height: 1.02; letter-spacing: -1.4px; margin: 0;
+  }
+  .pain h2 em { font-style: italic; color: var(--accent); }
+  .pain p {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(17px, 1.5vw, 21px); line-height: 1.45;
+    color: var(--ink-2); margin: 0; max-width: 32ch;
+  }
+  .pain .bits {
+    display: flex; flex-wrap: wrap; gap: 6px 14px;
+    font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--ink-mute); margin-top: 6px;
+  }
+  .pain .bits span::before { content: "·  "; color: var(--accent); }
+  .pain .bits span:first-child::before { content: ""; }
+
+  /* ============================================================
+     SLIDE 3 — what we built
+     ============================================================ */
+  .s-answer {
+    padding-top: 100px;
+    display: grid; grid-template-rows: auto 1fr auto; gap: 32px;
+  }
+  .answer-statement {
+    align-self: center;
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; line-height: 1.04; letter-spacing: -1.6px;
+    font-size: clamp(40px, 4.8vw, 72px);
+    max-width: 22ch; margin: 0;
+  }
+  .answer-statement em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .answer-foot {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--ink); padding-top: 16px;
+  }
+  .answer-foot .sub {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(18px, 1.6vw, 22px); color: var(--ink-2);
+    max-width: 36ch;
+  }
+  .answer-foot .next {
+    font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+  }
+  .answer-foot .next .arrow {
+    display: inline-block; margin-left: 8px; font-size: 16px;
+    transform: translateY(2px);
+  }
+
+  /* ============================================================
+     SLIDE 4 — live prototype handoff
+     ============================================================ */
+  .s-demo {
+    padding-top: 96px;
+    display: grid; grid-template-rows: auto 1fr auto; gap: 36px;
+  }
+
+  .demo-url {
+    align-self: center;
+    width: 100%; max-width: 980px;
+    display: flex; align-items: baseline; gap: 22px;
+    border: 1px solid var(--ink);
+    padding: 32px 36px;
+    background: var(--paper-card);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .demo-url .label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-mute); white-space: nowrap;
+  }
+  .demo-url .url {
+    font-family: "IBM Plex Mono", monospace; font-weight: 500;
+    font-size: clamp(20px, 2.2vw, 30px); letter-spacing: -0.5px;
+    color: var(--ink); flex: 1;
+  }
+  .demo-url .url .slash { color: var(--accent); }
+  .demo-url .live {
+    font-size: 10px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--accent); display: inline-flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .demo-url .live .blob {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); animation: pulse 1400ms ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50%      { opacity: 1;    transform: scale(1.1);  }
+  }
+
+  .demo-foot {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+    border-top: 1px solid var(--ink); padding-top: 22px;
+  }
+  .demo-step {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .demo-step .t {
+    font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+  }
+  .demo-step .body {
+    font-family: "Fraunces", serif; font-size: 16px; line-height: 1.42;
+    color: var(--ink-2); font-style: italic;
+  }
+
+  /* ============================================================
+     SLIDE 5 — how the search works
+     ============================================================ */
+  .s-how {
+    padding-top: 86px;
+    display: grid; grid-template-rows: auto auto auto; gap: 22px;
+  }
+  .how-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .how-step {
+    padding: 18px 22px 22px;
+    border-right: 1px solid var(--ink-faint);
+    border-bottom: 1px solid var(--ink-faint);
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 0;
+  }
+  .how-step:nth-child(3n) { border-right: 0; }
+  .how-step:nth-last-child(-n+3) { border-bottom: 0; }
+  .how-step .head {
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .how-step .num {
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; font-style: italic;
+    font-size: clamp(34px, 3.2vw, 46px); line-height: 1;
+    color: var(--accent);
+  }
+  .how-step .title {
+    font-family: "IBM Plex Mono", monospace; font-weight: 500;
+    font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .how-step .copy {
+    font-family: "Fraunces", serif;
+    font-size: clamp(13.5px, 1.15vw, 16px); line-height: 1.4;
+    color: var(--ink-2); margin: 0;
+  }
+  .how-step .copy em { color: var(--accent); font-style: italic; }
+  .how-step .copy code {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.86em;
+    background: var(--accent-soft); padding: 1px 5px;
+    color: var(--ink); border-radius: 2px;
+  }
+
+  /* featured objective-function box */
+  .objective {
+    border: 1px solid var(--ink);
+    background: var(--paper-card);
+    box-shadow: 8px 8px 0 var(--ink);
+    padding: 22px 30px 24px;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 14px;
+  }
+  .objective .obj-label {
+    font-size: 10px; letter-spacing: 2.6px; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+  }
+  .objective .formula {
+    font-family: "IBM Plex Mono", monospace; font-weight: 400;
+    font-size: clamp(18px, 2vw, 28px); letter-spacing: -0.3px;
+    color: var(--ink); line-height: 1.2;
+    text-align: center; white-space: nowrap; overflow-x: auto;
+  }
+  .objective .formula b { font-weight: 600; }
+  .objective .formula .w { color: var(--accent); font-weight: 600; }
+  .objective .formula .term { font-style: italic; font-family: "Fraunces", serif; }
+  .objective .annots {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 18px; padding-top: 10px;
+    border-top: 1px dashed var(--ink-faint);
+  }
+  .objective .annot {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .objective .annot .k {
+    font-family: "IBM Plex Mono", monospace; font-size: 10px;
+    letter-spacing: 1.8px; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .objective .annot .k b { color: var(--accent); margin-right: 6px; }
+  .objective .annot .v {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: 14px; line-height: 1.36; color: var(--ink-2);
+  }
+
+  /* ============================================================
+     SLIDE 6 — three trade-offs
+     ============================================================ */
+  .s-trade {
+    padding-top: 96px;
+    display: grid; grid-template-rows: auto 1fr; gap: 32px;
+  }
+  .trade-list {
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--ink);
+    align-self: center;
+  }
+  .trade-row {
+    display: grid; grid-template-columns: 60px 1fr 1.1fr;
+    gap: 32px; align-items: baseline;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+  .trade-row:last-child { border-bottom: 1px solid var(--ink); }
+  .trade-row .num {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(32px, 2.8vw, 42px); color: var(--accent);
+    font-weight: 300; line-height: 1;
+  }
+  .trade-row .decision {
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 400; font-size: clamp(22px, 2.1vw, 30px);
+    line-height: 1.18; letter-spacing: -0.4px;
+    color: var(--ink); margin: 0;
+  }
+  .trade-row .decision em { font-style: italic; color: var(--accent); }
+  .trade-row .cost {
+    border-left: 2px solid var(--accent); padding-left: 16px;
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(15px, 1.35vw, 18px); line-height: 1.4;
+    color: var(--ink-2); margin: 0;
+  }
+  .trade-row .cost::before {
+    content: "Cost"; display: block;
+    font-family: "IBM Plex Mono", monospace; font-style: normal;
+    font-size: 9px; letter-spacing: 2.2px; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 4px;
+  }
+
+  /* ============================================================
+     SLIDE 7 — closing
+     ============================================================ */
+  .s-close {
+    padding-top: 100px;
+    display: grid; grid-template-rows: auto 1fr auto;
+    gap: 36px;
+  }
+  .close-next {
+    border: 1px solid var(--ink); padding: 22px 28px;
+    background: var(--paper-card); box-shadow: 6px 6px 0 var(--ink);
+    max-width: 720px;
+  }
+  .close-next .label {
+    font-size: 10px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px; font-weight: 500;
+  }
+  .close-next .body {
+    font-family: "Fraunces", serif; font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.4; color: var(--ink); margin: 0;
+  }
+  .close-next .body em { font-style: italic; color: var(--accent); }
+
+  .close-mantra {
+    align-self: center;
+    font-family: "Fraunces", serif; font-variation-settings: "opsz" 144;
+    font-weight: 300; line-height: 0.98; letter-spacing: -2px;
+    font-size: clamp(72px, 9vw, 148px);
+    margin: 0; max-width: 12ch;
+  }
+  .close-mantra em { font-style: italic; color: var(--accent); font-weight: 400; }
+
+  .close-foot {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--ink); padding-top: 16px;
+  }
+  .close-foot .thanks {
+    font-family: "Fraunces", serif; font-style: italic;
+    font-size: clamp(20px, 1.8vw, 26px); color: var(--ink);
+  }
+  .close-foot .meta {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-mute); text-align: right; line-height: 1.8;
+  }
+
+  /* keyboard hint on cover */
+  .kbd-hint {
+    position: fixed; bottom: 20px; right: 92px;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-mute); z-index: 50;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .kbd-hint kbd {
+    border: 1px solid var(--ink-faint); padding: 2px 6px;
+    font-family: "IBM Plex Mono", monospace; font-size: 9px;
+    color: var(--ink-2);
+  }
+
+  /* responsive — keep readable on small displays */
+  @media (max-width: 900px) {
+    .slide { padding: 64px 36px 88px; }
+    .masthead { left: 36px; right: 36px; }
+    .controls { padding: 14px 36px; }
+    .diptych { grid-template-columns: 1fr; gap: 32px; }
+    .diptych .rule { display: none; }
+    .how-grid { grid-template-columns: 1fr; }
+    .how-step { border-right: 0; border-bottom: 1px solid var(--ink-faint); }
+    .how-step:last-child { border-bottom: 0; }
+    .trade-row { grid-template-columns: 1fr; gap: 12px; }
+    .demo-foot { grid-template-columns: 1fr; }
+  }
+
+  /* print fallback */
+  @media print {
+    body::before { display: none; }
+    .controls, .kbd-hint { display: none; }
+    .slide { position: relative; opacity: 1 !important; visibility: visible !important;
+             page-break-after: always; height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ────────── SLIDE 1 — COVER ────────── -->
+<section class="slide s-cover active" data-title="Cover">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>three-minute pitch</span>
+      <span>spring 2026</span>
+    </div>
+  </div>
+
+  <div class="cover-mark reveal">stanford  ·  <span>oit 277</span>  ·  april 2026</div>
+
+  <h1 class="cover-title reveal">
+    A marketplace<br>
+    for <em>independent</em><br>
+    artists.
+  </h1>
+
+  <div class="cover-foot reveal">
+    <div class="tag">A two-sided marketplace built around <em>exposure, not extraction.</em></div>
+    <div class="team">
+      <strong>team monkey</strong><br>
+      Ru Chen · Smriti Natarajan<br>
+      Joyce Yu · Hang Yu
+    </div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 2 — THE PROBLEM ────────── -->
+<section class="slide s-problem" data-title="The Problem">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>01 — the problem</span>
+      <span>both sides are stuck</span>
+    </div>
+  </div>
+
+  <div class="eyebrow reveal"><span class="num">01</span>The market is broken on both ends.</div>
+
+  <div class="diptych reveal">
+    <div class="pain">
+      <div class="label">Demand side</div>
+      <h2>Buyers <em>settle.</em></h2>
+      <p>An AI company sourcing footage. A film studio scouting characters. A creator chasing a vibe. They end up in DMs, in referral chains, or scrolling stock libraries that all look the same.</p>
+      <div class="bits"><span>DMs</span><span>referrals</span><span>stock libraries</span><span>generic content</span></div>
+    </div>
+    <div class="rule"></div>
+    <div class="pain">
+      <div class="label">Supply side</div>
+      <h2>Artists stay <em>invisible.</em></h2>
+      <p>Independent musicians and illustrators post into the void on Instagram and TikTok, hoping followers somehow turn into income. They usually don't.</p>
+      <div class="bits"><span>Instagram</span><span>TikTok</span><span>followers ≠ revenue</span><span>long tail</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 3 — WHAT WE BUILT ────────── -->
+<section class="slide s-answer" data-title="Our Answer">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>02 — our answer</span>
+      <span>one sentence</span>
+    </div>
+  </div>
+
+  <div class="eyebrow reveal"><span class="num">02</span>What we built</div>
+
+  <h2 class="answer-statement reveal">
+    A search-driven marketplace where buyers describe what they need in <em>plain English</em> — and find <em>real, verified</em> independent artists whose work actually fits.
+  </h2>
+
+  <div class="answer-foot reveal">
+    <div class="sub">Every artist verified. Every work verified. Every result tagged with a confidence score and an emerging-artist badge.</div>
+    <div class="next">live demo<span class="arrow">→</span></div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 4 — LIVE PROTOTYPE ────────── -->
+<section class="slide s-demo" data-title="Live Prototype">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>03 — live prototype</span>
+      <span>01:00</span>
+    </div>
+  </div>
+
+  <div class="eyebrow reveal"><span class="num">03</span>Switching to the live prototype</div>
+
+  <div class="demo-url reveal">
+    <span class="label">visit →</span>
+    <span class="url">indistream.vercel.app<span class="slash">/</span></span>
+    <span class="live"><span class="blob"></span>live</span>
+  </div>
+
+  <div class="demo-foot reveal">
+    <div class="demo-step">
+      <span class="t">01 — search</span>
+      <span class="body">Type the query. Watch results rank with confidence tags and emerging badges.</span>
+    </div>
+    <div class="demo-step">
+      <span class="t">02 — open a verified work</span>
+      <span class="body">Click in. See the verification badge, listing terms, artist profile.</span>
+    </div>
+    <div class="demo-step">
+      <span class="t">03 — toggle the filter</span>
+      <span class="body">Switch "verified only" off, then on. That's the hard filter at work.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 5 — HOW SEARCH WORKS ────────── -->
+<section class="slide s-how" data-title="How It Works">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>04 — under the hood</span>
+      <span>six steps + the objective function</span>
+    </div>
+  </div>
+
+  <div class="eyebrow reveal"><span class="num">04</span>How the search actually works — query to top 8</div>
+
+  <div class="how-grid reveal">
+    <div class="how-step">
+      <div class="head"><span class="num">01</span><span class="title">Listen</span></div>
+      <p class="copy">Separate the <em>vibe</em> (fuzzy: <em>"moody lo-fi"</em>) from the <em>hard rules</em> (non-negotiable: medium, budget, verified).</p>
+    </div>
+    <div class="how-step">
+      <div class="head"><span class="num">02</span><span class="title">Hard filter</span></div>
+      <p class="copy">Drop wrong medium, unverified artists, prices over <code>1.5×</code> the budget. The buyer's hard rules win — no exceptions.</p>
+    </div>
+    <div class="how-step">
+      <div class="head"><span class="num">03</span><span class="title">Top 60 by meaning</span></div>
+      <p class="copy">Every work has a <em>meaning fingerprint</em>. Your query gets one too. We pick the 60 closest in meaning — that's how <em>"lo-fi"</em> still finds <em>"chill."</em></p>
+    </div>
+    <div class="how-step">
+      <div class="head"><span class="num">04</span><span class="title">Score the 60</span></div>
+      <p class="copy">Apply the <em>objective function</em> (below). Each candidate gets one composite score combining three signals.</p>
+    </div>
+    <div class="how-step">
+      <div class="head"><span class="num">05</span><span class="title">Round-robin</span></div>
+      <p class="copy">Spread top picks <em>across artists</em>. One prolific creator can't take all 8 slots — every artist gets at most one before anyone gets two.</p>
+    </div>
+    <div class="how-step">
+      <div class="head"><span class="num">06</span><span class="title">Quota + confidence</span></div>
+      <p class="copy">Guarantee at least <code>2</code> emerging artists in the top 8. Tag every result <em>HIGH / MEDIUM / LOW</em> so the UI can be honest.</p>
+    </div>
+  </div>
+
+  <div class="objective reveal">
+    <div class="obj-label">↘  the objective function</div>
+    <div class="formula">
+      <b>score</b> &nbsp;=&nbsp; <span class="w">1.0</span> · <span class="term">relevance</span> &nbsp;+&nbsp; <span class="w">0.5</span> · <span class="term">emerging&#8209;boost</span> &nbsp;−&nbsp; <span class="w">0.6</span> · <span class="term">price&#8209;penalty</span>
+    </div>
+    <div class="annots">
+      <div class="annot">
+        <span class="k"><b>1.0</b> relevance</span>
+        <span class="v">how close in meaning the work is to your query (0–1)</span>
+      </div>
+      <div class="annot">
+        <span class="k"><b>0.5</b> emerging boost</span>
+        <span class="v">extra credit for under-followed indie artists — our mission, in code</span>
+      </div>
+      <div class="annot">
+        <span class="k"><b>0.6</b> price penalty</span>
+        <span class="v">soft — zero at or below budget, grows past it, maxes out at 1.5×</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 6 — THREE TRADE-OFFS ────────── -->
+<section class="slide s-trade" data-title="Trade-offs">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>05 — the decisions</span>
+      <span>three trade-offs</span>
+    </div>
+  </div>
+
+  <div class="eyebrow reveal"><span class="num">05</span>Three calls we made — each with a cost</div>
+
+  <div class="trade-list reveal">
+    <div class="trade-row">
+      <span class="num">01</span>
+      <h3 class="decision">Every <em>artist and every work</em> is verified.</h3>
+      <p class="cost">Onboarding takes longer. Supply grows slower. We accept that to keep the platform real.</p>
+    </div>
+    <div class="trade-row">
+      <span class="num">02</span>
+      <h3 class="decision">Price is a <em>soft penalty</em>, not a hard wall.</h3>
+      <p class="cost">A standout piece a few dollars over budget still gets a shot. Strict-budget buyers may see slight overages.</p>
+    </div>
+    <div class="trade-row">
+      <span class="num">03</span>
+      <h3 class="decision">We lean <em>hard</em> into emerging-artist exposure.</h3>
+      <p class="cost">Sometimes a slightly less-relevant emerging artist beats a textbook-perfect established one. That's the mission.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── SLIDE 7 — CLOSING ────────── -->
+<section class="slide s-close" data-title="Closing">
+  <div class="masthead">
+    <div class="brand">indi<span class="dot">·</span>stream</div>
+    <div class="right">
+      <span>06 — what's next</span>
+      <span>thank you</span>
+    </div>
+  </div>
+
+  <div class="close-next reveal">
+    <div class="label">↗  next up</div>
+    <p class="body">A <em>review system</em> that signals artist quality directly — fed back into the algorithm so trusted emerging artists rise even faster.</p>
+  </div>
+
+  <h2 class="close-mantra reveal"><em>Exposure</em><br>over<br>extraction.</h2>
+
+  <div class="close-foot reveal">
+    <div class="thanks">Thank you.</div>
+    <div class="meta">
+      indistream  ·  spring 2026<br>
+      stanford  ·  oit 277
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ────────── controls ────────── -->
+<div class="controls">
+  <button class="nav-btn" id="prev">← prev</button>
+  <div class="progress"><div class="fill" id="progressFill" style="width:14.28%"></div></div>
+  <span class="counter" id="counter">01 / 07</span>
+  <button class="nav-btn" id="next">next →</button>
+</div>
+
+<div class="kbd-hint" id="kbdHint">
+  <kbd>←</kbd><kbd>→</kbd>  navigate
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+
+  const counter = document.getElementById('counter');
+  const fill    = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const hint    = document.getElementById('kbdHint');
+
+  const pad2 = n => String(n).padStart(2, '0');
+
+  function go(n) {
+    idx = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    counter.textContent = `${pad2(idx + 1)} / ${pad2(total)}`;
+    fill.style.width = `${((idx + 1) / total) * 100}%`;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    if (idx > 0) hint.style.opacity = '0';
+  }
+
+  prevBtn.addEventListener('click', () => go(idx - 1));
+  nextBtn.addEventListener('click', () => go(idx + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(idx + 1); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key))    { e.preventDefault(); go(idx - 1); }
+    else if (e.key === 'Home')                            { go(0); }
+    else if (e.key === 'End')                             { go(total - 1); }
+  });
+
+  // touch/swipe
+  let touchStartX = null;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend',   (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 60) go(dx < 0 ? idx + 1 : idx - 1);
+    touchStartX = null;
+  });
+
+  // initial
+  go(0);
+</script>
+
+</body>
+</html>
